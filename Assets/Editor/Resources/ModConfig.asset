@@ -11,26 +11,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 615501dbe4f3fe94fbf4b564abb10237, type: 3}
   m_Name: ModConfig
   m_EditorClassIdentifier: 
-  id: greenArrowsModule
-  title: Green Arrows
-  author: Kusane, eXish
-  description: 'A module where you translate a 2-digit number into a button to press.
-    Made becuase I felt like helping someone with their module idea and to finally
-    release an actual easy module.
+  id: colorfulcolorlessArrowsModule
+  title: Multicolored and Black Arrows
+  author: VFlyer, eXish, Madela, R3Ked, TasThing, Danny7007
+  description: 'A collection of 4 Arrow Modules whose manual ideas are by the respective
+    creators.
+
+    Author of the manual''s respective modules in collection:
+
+    Coloured Arrows: Madela
+
+    Flashing Arrows: R3Ked
+
+    Black Arrows: TasThing
+
+    Gray Arrows: Danny7007
 
 
-    HTML: https://ktane.timwi.de/HTML/Green%20Arrows.html
-
-    PDF: https://ktane.timwi.de/PDF/Green%20Arrows.pdf
+    Original Arrows prefab by eXish, modified by VFlyer for multi-purpose usage
 
 
-    Green Arrows (greenArrowsModule) v1.1.2
-
-    Module and Idea by Kusane
-
-    Mod Implemented by eXish
+    Mod Implemented by VFlyer
 
     Twitch Plays supported'
-  version: 1.1.2
+  version: 1.0
   outputFolder: build
   previewImage: {fileID: 2800000, guid: b635f5645b5aab64da967c80a675c5de, type: 3}
