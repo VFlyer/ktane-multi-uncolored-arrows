@@ -22,7 +22,7 @@ public class FlashingArrowsScript : BaseArrowsScript {
         { 6, Color.white }, // White
     };
     readonly int[][][] idxPressArray = {
-        new int[][] {
+        new int[][] { // Red Row
             new int[] { 0, 2, 3, 1 },
             new int[] { 1, 2, 3, 0 },
             new int[] { 2, 0, 1, 3 },
@@ -31,7 +31,7 @@ public class FlashingArrowsScript : BaseArrowsScript {
             new int[] { 3, 0, 1, 2 },
             new int[] { 3, 0, 2, 1 },
         },
-        new int[][] {
+        new int[][] { // Orange Row
             new int[] { 2, 1, 0, 3 },
             new int[] { 1, 0, 3, 2 },
             new int[] { 2, 0, 1, 3 },
@@ -40,7 +40,7 @@ public class FlashingArrowsScript : BaseArrowsScript {
             new int[] { 3, 2, 1, 0 },
             new int[] { 2, 0, 3, 1 },
         },
-        new int[][] {
+        new int[][] { // Yellow Row
             new int[] { 1, 0, 3, 2 },
             new int[] { 2, 1, 0, 3 },
             new int[] { 0, 2, 1, 3 },
@@ -49,7 +49,7 @@ public class FlashingArrowsScript : BaseArrowsScript {
             new int[] { 2, 3, 1, 0 },
             new int[] { 2, 3, 1, 0 },
         },
-        new int[][] {
+        new int[][] { // Green Row
             new int[] { 1, 3, 0, 2 },
             new int[] { 1, 0, 3, 2 },
             new int[] { 1, 2, 0, 3 },
@@ -58,16 +58,16 @@ public class FlashingArrowsScript : BaseArrowsScript {
             new int[] { 3, 2, 1, 0 },
             new int[] { 1, 0, 2, 3 },
         },
-        new int[][] {
+        new int[][] { // Blue Row
             new int[] { 3,0,1,2 },
-            new int[] { 2,1,0,3 },
+            new int[] { 1,2,0,3 },
             new int[] { 2,3,0,1 },
             new int[] { 2,3,1,0 },
             new int[] { 1,0,3,2 },
             new int[] { 2,0,1,3 },
             new int[] { 1,0,3,2 },
         },
-        new int[][] {
+        new int[][] { // Purple Row
             new int[] { 3,0,2,1 },
             new int[] { 0,3,2,1 },
             new int[] { 0,2,3,1 },
@@ -76,7 +76,7 @@ public class FlashingArrowsScript : BaseArrowsScript {
             new int[] { 2,1,0,3 },
             new int[] { 1,0,2,3 },
         },
-        new int[][] {
+        new int[][] { // White Row
             new int[] { 2,3,1,0 },
             new int[] { 1,3,2,0 },
             new int[] { 2,3,1,0 },
@@ -163,6 +163,7 @@ public class FlashingArrowsScript : BaseArrowsScript {
         StartCoroutine(TypeNumber());
         arrowFlasher = FlashArrows();
         // Shift the flashing arrows a bit upon a reset
+        /*
         for (int x = 0; x < idxColorFlashingArrows.Length; x++)
         {
             int repeatCount = uernd.Range(0, 3);
@@ -177,7 +178,7 @@ public class FlashingArrowsScript : BaseArrowsScript {
                 idxColorFlashingArrows[x][idxColorFlashingArrows[x].Length - 1] = firstIdx;
             }
         }
-
+        */
 
         StartCoroutine(arrowFlasher);
     }
@@ -200,8 +201,6 @@ public class FlashingArrowsScript : BaseArrowsScript {
         var serNoNumbers = mBombInfo.GetSerialNumberNumbers();
         int modifier = serNoNumbers.Any() ? serNoNumbers.First() : mBombInfo.GetPortPlateCount();
 
-        
-
         int selectedNumber = (displayNumber + modifier) % 5;
         if (selectedNumber == 0) selectedNumber = 1;
 
@@ -218,10 +217,12 @@ public class FlashingArrowsScript : BaseArrowsScript {
         QuickLog(string.Format("This arrow is flashing the following colors: [ {0} ]", arrowSet.Select(a => a >= 0 ? debugColors[a] : "Black").Join(", ")));
 
         var idxBlack = Array.IndexOf(arrowSet, -1);
+        var colorAfterBlack = arrowSet[(idxBlack + 1) % 3];
+        var colorBeforeBlack = arrowSet[(idxBlack + 2) % 3];
+
 
         correctPresses = idxPressArray[arrowSet[(idxBlack + 1) % 3]][arrowSet[(idxBlack + 2) % 3]];
-
-        QuickLog(string.Format("Correct order to press: [ {0} ]", correctPresses.Select(a => debugDirections[a]).Join(", ")));
+        QuickLog(string.Format("Correct order to press ( {1} row, {2} column ): [ {0} ]", correctPresses.Select(a => debugDirections[a]).Join(", "), debugColors[colorAfterBlack], debugColors[colorBeforeBlack]));
 
         arrowFlasher = FlashArrows();
 

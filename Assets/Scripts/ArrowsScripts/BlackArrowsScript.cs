@@ -147,11 +147,21 @@ public class BlackArrowsScript : BaseArrowsScript {
             QuickLog(string.Format("Strike! The module is not ready to solve."));
             hasStruck = true;
             modSelf.HandleStrike();
+            return;
         }
-
+        if (currentFlashingDirection != null)
+        {
+            StopCoroutine(currentFlashingDirection);
+            isFlashing = false;
+            arrowRenderers[0].material = setMats[0];
+            arrowRenderers[1].material = setMats[0];
+            arrowRenderers[2].material = setMats[0];
+            arrowRenderers[3].material = setMats[0];
+        }
         if (finalDirectionIdxPresses[currentInputPos] == directionIdxInput)
         {
             currentInputPos++;
+            textDisplay.text = "";
             if (currentInputPos >= finalDirectionIdxPresses.Count)
             {
                 QuickLog(string.Format("Directions inputted successfully. Module solved."));
@@ -164,6 +174,31 @@ public class BlackArrowsScript : BaseArrowsScript {
             QuickLog(string.Format("Strike! Direction {1} was incorrectly pressed for stage {0}!", currentInputPos, idxToDirections[directionIdxInput]));
             hasStruck = true;
             modSelf.HandleStrike();
+            textDisplay.color = Color.red * 0.5f;
+            if (currentInputPos > 0)
+            {
+                currentFlashingDirection = HandleMercy();
+                StartCoroutine(currentFlashingDirection);
+            }
+            else
+            {
+                StartCoroutine(TypeText(currentInputPos.ToString("00")));
+            }
+        }
+    }
+
+    IEnumerator HandleMercy()
+    {
+        yield return null;
+        int lastCorrectInputPos = currentInputPos;
+        yield return TypeText(currentInputPos.ToString("00"));
+        while (lastCorrectInputPos == currentInputPos)
+        {
+            for (int x = 0; x < currentInputPos; x++)
+            {
+                yield return FlashingGivenDirection(allDirectionIdxs[x], allRepeatCounts[x]);
+            }
+            yield return new WaitForSeconds(5f);
         }
     }
 
@@ -492,7 +527,9 @@ public class BlackArrowsScript : BaseArrowsScript {
             arrowRenderers[x].material = setMats[0];
         }
     }
-
+#pragma warning disable 414
+    private readonly string TwitchHelpMessage = "Press the specified arrow button with \"!{0} up/right/down/left\" Words can be substituted as one letter (Ex. right as r). Multiple directions can be issued in one command by spacing them out. Toggle colorblind mode with \"!{0} colorblind\"";
+#pragma warning restore 414
     protected override IEnumerator ProcessTwitchCommand(string command)
     {
         if (moduleSolved || isanimating)

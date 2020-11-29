@@ -11,13 +11,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 615501dbe4f3fe94fbf4b564abb10237, type: 3}
   m_Name: ModConfig
   m_EditorClassIdentifier: 
-  id: colorfulcolorlessArrowsModule
+  id: colorfulAndBlackArrowsMod
   title: Multicolored and Black Arrows
-  author: VFlyer, eXish, Madela, R3Ked, TasThing, Danny7007
-  description: 'A collection of 4 Arrow Modules whose manual ideas are by the respective
+  author: VFlyer, eXish, Madela, R3Ked, TasThing
+  description: 'A collection of 3 Arrow Modules with manual ideas are by the respective
     creators.
 
-    Author of the manual''s respective modules in collection:
+    Author of the manual''s respective modules in this collection:
 
     Coloured Arrows: Madela
 
@@ -25,7 +25,14 @@ MonoBehaviour:
 
     Black Arrows: TasThing
 
-    Gray Arrows: Danny7007
+
+    Module IDs:
+
+    Coloured Arrows: colouredArrowsModule
+
+    Flashing Arrows: flashingArrowsModule
+
+    Black Arrows: blackArrowsModule
 
 
     Original Arrows prefab by eXish, modified by VFlyer for multi-purpose usage
@@ -33,7 +40,10 @@ MonoBehaviour:
 
     Mod Implemented by VFlyer
 
-    Twitch Plays supported'
+    Twitch Plays supported, tested on his stream on Twitch
+
+
+    Source Code: https://github.com/VFlyer/ktane-multi-uncolored-arrows'
   version: 1.0
   outputFolder: build
-  previewImage: {fileID: 2800000, guid: b635f5645b5aab64da967c80a675c5de, type: 3}
+  previewImage: {fileID: 2800000, guid: 7e77cc94159c66f418cf0ee83896bc68, type: 3}
