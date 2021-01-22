@@ -49,19 +49,6 @@ public class GrayArrowsScript : MonoBehaviour {
         moduleId = moduleIdCounter++;
 
         textDisplay.text = "";
-        for (int x = 0; x < arrowButtons.Length; x++)
-        {
-            int y = x;
-            arrowButtons[x].OnInteract += delegate {
-                MAudio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, arrowButtons[y].transform);
-                arrowButtons[y].AddInteractionPunch();
-                if (!(isActive || isanimating))
-                {
-                    //ProcessInput(y);
-                }
-                return false;
-            };
-        }
         needySelf.OnActivate += delegate { hasStarted = true; };
 
         needySelf.OnNeedyActivation += AssignValue;
@@ -69,6 +56,7 @@ public class GrayArrowsScript : MonoBehaviour {
         needySelf.OnTimerExpired += delegate {
             QuickLog("Letting the needy timer run out is not a good idea after all.");
             currentStreak = 0;
+            needySelf.SetResetDelayTime(15 + 5 * currentStreak, 45 + 10 * currentStreak); // Increase reactivation time based on the streak the module is on.
             needySelf.HandleStrike();
             isActive = false;
         };
@@ -85,6 +73,12 @@ public class GrayArrowsScript : MonoBehaviour {
                 return false;
             };
         }
+
+        needySelf.OnNeedyDeactivation += delegate
+        {
+            StartCoroutine(victory());
+            hasStarted = false;
+        };
 
         bombInfo.OnBombSolved += delegate {
             StartCoroutine(victory());
@@ -119,16 +113,16 @@ public class GrayArrowsScript : MonoBehaviour {
         int randomDirection = uernd.Range(0, 4);
         switch (randomDirection)
         {
-            case 0:
+            case 3:
                 curCol -= 1;
                 goto default;
-            case 1:
+            case 2:
                 curRow += 1;
                 goto default;
-            case 2:
+            case 1:
                 curCol += 1;
                 goto default;
-            case 3:
+            case 0:
                 curRow -= 1;
                 goto default;
             default:
@@ -151,13 +145,13 @@ public class GrayArrowsScript : MonoBehaviour {
         }
         else
         {
-            QuickLog(string.Format( "Strike! The {0} was incorrectly pressed at {1} streak!",
+            QuickLog(string.Format( "Strike! The {0} was incorrectly pressed at {1} streak! Resetting streak to 0.",
                 baseDirections[directionIdx], currentStreak));
             currentStreak = 0;
             needySelf.HandleStrike();
         }
         textDisplay.text = "";
-        needySelf.SetResetDelayTime(15 + 5 * currentStreak, 45 + 10 * currentStreak); // Increase reactivation time based on how long the defuser disarms it.
+        needySelf.SetResetDelayTime(15 + 5 * currentStreak, 45 + 10 * currentStreak); // Increase reactivation time based on the streak the module is on.
         needySelf.HandlePass();
         isActive = false;
     }

@@ -9,7 +9,7 @@ using rnd = UnityEngine.Random;
 public class ColouredArrowsScript : BaseArrowsScript {
 
     public KMBombInfo bomb;
-
+    public KMRuleSeedable ruleSeedCore;
     public MeshRenderer[] arrowRenderers;
 
     public GameObject colorblindTextIndicator;
@@ -27,10 +27,9 @@ public class ColouredArrowsScript : BaseArrowsScript {
     int[] idxColorList = new int[] { 0, 1, 2, 3 };
 
     Dictionary<int, int[]> possibleIdxGoalColors = new Dictionary<int, int[]>() {
-        { 0, new[] { 0, 1, 2, 3, } },
-        { 1, new[] { 1, 2, 3, 0, } },
-        { 2, new[] { 2, 3, 0, 1, } },
-        { 3, new[] { 3, 0, 1, 2, } },
+        // Example: {-1, new[] { 0, 1, 2, 3, } }
+        // Key: color idx of the given display
+        // Value: an idx array of possible goal colors for up, right, down, and left directions respectively
     };
     Dictionary<string, Color> connectedColors = new Dictionary<string, Color>() {
         { "Red", Color.red },
@@ -38,7 +37,46 @@ public class ColouredArrowsScript : BaseArrowsScript {
         { "Green", new Color(0.18393165f, 0.5955882f, 0.22083879f) },
         { "Blue", new Color(.03529412f, .043137256f, 1) },
     };
-
+    void HandleRuleSeed()
+    {
+        
+        if (ruleSeedCore != null)
+        {
+            var randomizer = ruleSeedCore.GetRNG() ?? null;
+            int[] baseArrayList = new[] { 0, 1, 2, 3, };
+            if (randomizer.Seed != 1)
+            {
+                for (var x = 0; x < 4; x++)
+                {
+                    possibleIdxGoalColors.Add(x, randomizer.ShuffleFisherYates(baseArrayList).ToArray());
+                }
+            }
+            else
+            {
+                possibleIdxGoalColors.Add(0, new[] { 0, 1, 2, 3, });
+                possibleIdxGoalColors.Add(1, new[] { 1, 2, 3, 0, });
+                possibleIdxGoalColors.Add(2, new[] { 2, 3, 0, 1, });
+                possibleIdxGoalColors.Add(3, new[] { 3, 0, 1, 2, });
+            }
+            Debug.LogFormat("[Coloured Arrows #{0}]: Rule seed for Coloured Arrows generated instructions with a seed of {1}.", moduleId, randomizer.Seed);
+        }
+        else
+        {
+            Debug.LogFormat("[Coloured Arrows #{0}]: Rule seed for Coloured Arrows does not exist yet. It will be implemented at some point. Just be patient.", moduleId);
+            possibleIdxGoalColors.Add(0, new[] { 0, 1, 2, 3, });
+            possibleIdxGoalColors.Add(1, new[] { 1, 2, 3, 0, });
+            possibleIdxGoalColors.Add(2, new[] { 2, 3, 0, 1, });
+            possibleIdxGoalColors.Add(3, new[] { 3, 0, 1, 2, });
+        }
+        Debug.LogFormat("<Coloured Arrows #{0}>: Rule-Seed Generated Instructions: (Formatted as [Color displayed]: [ Goal Colors for Up, Right, Down, Left respectively ])", moduleId);
+        foreach (var rsSet in possibleIdxGoalColors)
+        {
+            Debug.LogFormat("<Coloured Arrows #{0}>: {1}: [ {2} ]", moduleId,
+                possibleColors.ElementAtOrDefault(rsSet.Key),
+                rsSet.Value.Select(a => possibleColors.ElementAtOrDefault(a)).Join(", "));
+        }
+        
+    }
     void Awake()
     {
         moduleId = moduleIdCounter++;
@@ -62,6 +100,7 @@ public class ColouredArrowsScript : BaseArrowsScript {
         Debug.LogFormat("[Coloured Arrows #{0}]: {1}", moduleId, toLog);
     }
     void Start () {
+        HandleRuleSeed();
         GeneratePossibleArrows();
         textDisplay.text = "";
         for (int x = 0; x < arrowRenderers.Length; x++)
@@ -85,7 +124,7 @@ public class ColouredArrowsScript : BaseArrowsScript {
             }
             else
             {
-                QuickLog(string.Format("You pressed {0}, which is correct! Current Streak: {1}", baseDirections[idx], streak));
+                QuickLog(string.Format("You pressed {0}, which is correct! Current Streak: {1}.", baseDirections[idx], streak));
                 GeneratePossibleArrows();
                 StartCoroutine(ToNextArrow());
             }
@@ -105,14 +144,14 @@ public class ColouredArrowsScript : BaseArrowsScript {
         idxColorList.Shuffle();
         idxDirectionDisplay = rnd.Range(0, 4);
         idxColorDisplay = rnd.Range(0, 4);
-        QuickLog(string.Format("The display is showing {1} in {0}",
+        QuickLog(string.Format("The display is showing {1} in {0}.",
             possibleColors[idxColorDisplay],
             baseDirections[idxDirectionDisplay]
             ));
 
         var goalColor = possibleIdxGoalColors.ContainsKey(idxColorDisplay) ? possibleIdxGoalColors[idxColorDisplay][idxDirectionDisplay] : -1;
         targetButtonIdx = Array.IndexOf(idxColorList, goalColor);
-        QuickLog(string.Format("The target arrow to press is the {0} arrow which is colored {1}",
+        QuickLog(string.Format("The target arrow to press is the {0} arrow which is colored {1}.",
             baseDirections[targetButtonIdx],
             possibleColors[goalColor]
             ));
@@ -249,8 +288,9 @@ public class ColouredArrowsScript : BaseArrowsScript {
             yield return new WaitForSeconds(0.025f);
         }
         textDisplay.text = "GG";
-        StopCoroutine(colorShuffle);
+        //StopCoroutine(colorShuffle);
         modSelf.HandlePass();
+        /*
         IEnumerable<Color> lastColors = arrowRenderers.Select(a => a.material.color);
         for (int y = 0; y <= 50; y++)
         {
@@ -261,6 +301,7 @@ public class ColouredArrowsScript : BaseArrowsScript {
             }
             yield return new WaitForSeconds(0.025f);
         }
+        */
         isanimating = false;
     }
 

@@ -89,7 +89,7 @@ public class FlashingArrowsScript : BaseArrowsScript {
 
     int[][] idxColorFlashingArrows = new int[4][];
 
-    int displayNumber, curPos;
+    int displayNumber, curPos, idxReferencedArrow;
     bool hasStruck = false;
     private static int moduleIdCounter = 1;
 
@@ -208,7 +208,7 @@ public class FlashingArrowsScript : BaseArrowsScript {
 
         int[] idxArrowSet = { 3, 1, 2, 0 };
 
-        var idxReferencedArrow = idxArrowSet[selectedNumber - 1];
+        idxReferencedArrow = idxArrowSet[selectedNumber - 1];
 
         QuickLog(string.Format("The arrow to reference is the {0} arrow.", debugDirections[idxReferencedArrow]));
 
@@ -303,7 +303,7 @@ public class FlashingArrowsScript : BaseArrowsScript {
 
 	}
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = "Press the specified arrow button with \"!{0} up/right/down/left\" Words can be substituted as one letter (Ex. right as r). Multiple directions can be issued in one command by spacing them out. Toggle colorblind mode with \"!{0} colorblind\"";
+    private readonly string TwitchHelpMessage = "Press the specified arrow button with \"!{0} up/right/down/left\" Words can be substituted as one letter (Ex. right as r). Multiple directions can be issued in one command by spacing them out or as 1 word when abbrevivabted, I.E \"!{0} udlr\". Toggle colorblind mode with \"!{0} colorblind\"";
 #pragma warning restore 414
     protected override IEnumerator ProcessTwitchCommand(string command)
     {
@@ -319,37 +319,81 @@ public class FlashingArrowsScript : BaseArrowsScript {
             HandleColorblindToggle();
             yield break;
         }
+        else if (Regex.IsMatch(command, @"^\s*uldr+\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            var usableCommand = command.ToLowerInvariant();
+            List<int> allPresses = new List<int>();
+            foreach (char dir in usableCommand)
+            {
+                switch (dir)
+                {
+                    case 'u':
+                        allPresses.Add(0);
+                        break;
+                    case 'd':
+                        allPresses.Add(2);
+                        break;
+                    case 'l':
+                        allPresses.Add(3);
+                        break;
+                    case 'r':
+                        allPresses.Add(1);
+                        break;
+                    default:
+                        yield return string.Format("sendtochaterror I do not know what direction \"{0}\" is supposed to be.", dir);
+                        yield break;
+                }
+            }
+            if (allPresses.Any())
+            {
+                hasStruck = false;
+                for (int x = 0; x < allPresses.Count && !hasStruck; x++)
+                {
+                    yield return null;
+                    if (allPresses[x] != correctPresses[curPos] && allPresses.Count > 1)
+                        yield return string.Format("strikemessage by incorrectly pressing {0} after {1} press(es) in the TP command!", debugDirections[allPresses[x]], x + 1);
+                    arrowButtons[allPresses[x]].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                    if (moduleSolved) yield return "solve";
+                }
+            }
+        }
         else
         {
             string[] cmdSets = command.Split();
+            List<KMSelectable> allPresses = new List<KMSelectable>();
             hasStruck = false;
-            for (int x = 0; x < cmdSets.Length && !hasStruck; x++)
+            for (int x = 0; x < cmdSets.Length; x++)
             {
                 if (Regex.IsMatch(cmdSets[x], @"^\s*u(p)?\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
                 {
-                    yield return null;
-                    arrowButtons[0].OnInteract();
+                    allPresses.Add(arrowButtons[0]);
                 }
                 else if (Regex.IsMatch(cmdSets[x], @"^\s*d(own)?\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
                 {
-                    yield return null;
-                    arrowButtons[2].OnInteract();
+                    allPresses.Add(arrowButtons[2]);
                 }
                 else if (Regex.IsMatch(cmdSets[x], @"^\s*l(eft)?\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
                 {
-                    yield return null;
-                    arrowButtons[3].OnInteract();
+                    allPresses.Add(arrowButtons[3]);
                 }
                 else if (Regex.IsMatch(cmdSets[x], @"^\s*r(ight)?\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
                 {
-                    yield return null;
-                    arrowButtons[1].OnInteract();
+                    allPresses.Add(arrowButtons[1]);
                 }
                 else
                 {
                     yield return string.Format("sendtochaterror I do not know what direction \"{0}\" is supposed to be.", cmdSets[x]);
                     yield break;
                 }
+            }
+            for (var x = 0; x < allPresses.Count; x++)
+            {
+                yield return null;
+                var debugIdx = Array.IndexOf(arrowButtons, allPresses[x]);
+                if (debugIdx != correctPresses[curPos] && allPresses.Count > 1)
+                    yield return string.Format("strikemessage by incorrectly pressing {0} after {1} press(es) in the TP command!", debugDirections[debugIdx], x + 1);
+                allPresses[x].OnInteract();
                 yield return new WaitForSeconds(0.1f);
                 if (moduleSolved) { yield return "solve"; }
             }

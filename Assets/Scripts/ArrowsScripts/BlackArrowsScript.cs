@@ -205,6 +205,7 @@ public class BlackArrowsScript : BaseArrowsScript {
 
     IEnumerator FlashingGivenDirection(int directionIdx, int repeatCount = 1)
     {
+        yield return new WaitForSeconds(0.5f);
         for (int x = 0; x < repeatCount; x++)
         {
             switch (directionIdx)
@@ -389,10 +390,15 @@ public class BlackArrowsScript : BaseArrowsScript {
             curVal += 1 + x;
             allFinalValuesVisited.Add(curVal);
             QuickLog(string.Format("After adding \"n\": {0}", curVal));
+            // Logging for invididual stages
+            var indivStageVal = curVal + modifier;
+            QuickLog(string.Format("After adding sum of alphabetical positions in serial number, mod 5: {0}", indivStageVal));
+            var indivStageDir = (indivStageVal - 1) % 12 + 1;
+            QuickLog(string.Format("Result after keeping the number within 1 - 12 inclusive: {0} ({1})", indivStageDir, idxToDirections[goalIdxPressesByValue[indivStageDir]]));
             QuickLog(string.Format(""));
         }
         allFinalValuesVisited = allFinalValuesVisited.Select(a => (a + modifier - 1) % 12 + 1).ToList();
-        QuickLog(string.Format("Final Values for all stages (including stage 0, within 1 - 12): {0}", allFinalValuesVisited.Join(", ")));
+        QuickLog(string.Format("Final Values for all stages (including stage 0, after adding sum of alphabetical positions in serial no. mod 5, kept within 1 - 12 inclusive): {0}", allFinalValuesVisited.Join(", ")));
         finalDirectionIdxPresses = allFinalValuesVisited.Select(a => goalIdxPressesByValue[a]).ToList();
         QuickLog(string.Format("Presses required (From stage 0): {0}", finalDirectionIdxPresses.Select(x => idxToDirections[x]).Join(", ")));
         hasStarted = true;
@@ -412,13 +418,13 @@ public class BlackArrowsScript : BaseArrowsScript {
         }
         yield return new WaitForSeconds(0.2f);
     }
-    float delayLeft = 0f;
+    float delayLeft = 0f, maxTimeAllocatable = 5f;
     void Update()
     {
         for (int x = 0; x < timerDisplayer.Length; x++)
         {
             timerDisplayer[x].SetActive(delayLeft > 0f && !readyToSolve);
-            timerDisplayer[x].transform.localScale = new Vector3(delayLeft / 5f, 1, .005f);
+            timerDisplayer[x].transform.localScale = new Vector3(delayLeft / maxTimeAllocatable, 1, .005f);
         }
         if (hasStarted && !readyToSolve)
         {
@@ -428,7 +434,7 @@ public class BlackArrowsScript : BaseArrowsScript {
                 if (currentStageNum < solveCount)
                 {
                     currentStageNum++;
-                    delayLeft = 5f;
+                    delayLeft = maxTimeAllocatable;
                     if (currentStageNum < totalStagesGeneratable)
                         StartCoroutine(TypeText((currentStageNum + 1).ToString("00")));
                     if (currentFlashingDirection != null)
@@ -528,7 +534,7 @@ public class BlackArrowsScript : BaseArrowsScript {
         }
     }
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = "Press the specified arrow button with \"!{0} up/right/down/left\" Words can be substituted as one letter (Ex. right as r). Multiple directions can be issued in one command by spacing them out. Toggle colorblind mode with \"!{0} colorblind\"";
+    private readonly string TwitchHelpMessage = "Press the specified arrow button with \"!{0} up/right/down/left\" Words can be substituted as one letter (Ex. right as r). Multiple directions can be issued in one command by spacing them out or as 1 word when abbrevivabted, I.E \"!{0} udlr\". Toggle colorblind mode with \"!{0} colorblind\"";
 #pragma warning restore 414
     protected override IEnumerator ProcessTwitchCommand(string command)
     {
@@ -543,6 +549,52 @@ public class BlackArrowsScript : BaseArrowsScript {
             colorblindActive = !colorblindActive;
             HandleColorblindToggle();
             yield break;
+        }
+        else if (Regex.IsMatch(command, @"^\s*uldr+\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            var usableCommand = command.Trim().ToLowerInvariant();
+            List<int> allPresses = new List<int>();
+            foreach (char dir in usableCommand)
+            {
+                switch (dir)
+                {
+                    case 'u':
+                        allPresses.Add(0);
+                        break;
+                    case 'd':
+                        allPresses.Add(2);
+                        break;
+                    case 'l':
+                        allPresses.Add(3);
+                        break;
+                    case 'r':
+                        allPresses.Add(1);
+                        break;
+                    default:
+                        yield return string.Format("sendtochaterror I do not know what direction \"{0}\" is supposed to be.", dir);
+                        yield break;
+                }
+            }
+            if (allPresses.Any())
+            {
+                hasStruck = false;
+                if (!readyToSolve)
+                {
+                    yield return "sendtochat Is it too early to submit now?";
+                    yield return null;
+                    arrowButtons[allPresses[0]].OnInteract();
+
+                }
+                for (int x = 0; x < allPresses.Count && !hasStruck; x++)
+                {
+                    yield return null;
+                    if (allPresses[x] != finalDirectionIdxPresses[currentInputPos] && allPresses.Count > 1)
+                        yield return string.Format("strikemessage by incorrectly pressing {0} after {1} press(es) in the TP command!", idxToDirections[allPresses[x]], x + 1);
+                    arrowButtons[allPresses[x]].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                    if (moduleSolved) yield return "solve";
+                }
+            }
         }
         else
         {
@@ -588,6 +640,8 @@ public class BlackArrowsScript : BaseArrowsScript {
                 for (int x = 0; x < allPresses.Count && !hasStruck; x++)
                 {
                     yield return null;
+                    if (allPresses[x] != finalDirectionIdxPresses[currentInputPos] && allPresses.Count > 1)
+                        yield return string.Format("strikemessage by incorrectly pressing {0} after {1} press(es) in the TP command!", idxToDirections[allPresses[x]], x + 1);
                     arrowButtons[allPresses[x]].OnInteract();
                     yield return new WaitForSeconds(0.1f);
                     if (moduleSolved) yield return "solve";
