@@ -194,7 +194,7 @@ public class BlackArrowsScript : BaseArrowsScript {
         yield return TypeText(currentInputPos.ToString("00"));
         while (lastCorrectInputPos == currentInputPos)
         {
-            for (int x = 0; x < currentInputPos; x++)
+            for (int x = 0; x < currentInputPos && lastCorrectInputPos == currentInputPos; x++)
             {
                 yield return FlashingGivenDirection(allDirectionIdxs[x], allRepeatCounts[x]);
             }
@@ -550,7 +550,7 @@ public class BlackArrowsScript : BaseArrowsScript {
             HandleColorblindToggle();
             yield break;
         }
-        else if (Regex.IsMatch(command, @"^\s*uldr+\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        else if (Regex.IsMatch(command, @"^\s*[uldr]+\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
         {
             var usableCommand = command.Trim().ToLowerInvariant();
             List<int> allPresses = new List<int>();

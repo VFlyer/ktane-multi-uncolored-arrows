@@ -42,13 +42,26 @@ public class ColouredArrowsScript : BaseArrowsScript {
         
         if (ruleSeedCore != null)
         {
-            var randomizer = ruleSeedCore.GetRNG() ?? null;
-            int[] baseArrayList = new[] { 0, 1, 2, 3, };
+            var randomizer = ruleSeedCore.GetRNG();
             if (randomizer.Seed != 1)
             {
+                int[] baseArrayList = randomizer.ShuffleFisherYates(new[] { 0, 1, 2, 3, });
+                var combinedArrays = new List<int[]>();
+                var modifiedArray = baseArrayList.ToList();
                 for (var x = 0; x < 4; x++)
                 {
-                    possibleIdxGoalColors.Add(x, randomizer.ShuffleFisherYates(baseArrayList).ToArray());
+                    combinedArrays.Add(modifiedArray.ToArray());
+                    var firstValue = modifiedArray.First();
+                    modifiedArray.RemoveAt(0);
+                    modifiedArray.Add(firstValue);
+                }
+                
+                randomizer.ShuffleFisherYates(combinedArrays);
+
+                // Add their respective modifiers
+                for (var x = 0; x < combinedArrays.Count; x++)
+                {
+                    possibleIdxGoalColors.Add(x, combinedArrays[x]);
                 }
             }
             else
@@ -62,7 +75,7 @@ public class ColouredArrowsScript : BaseArrowsScript {
         }
         else
         {
-            Debug.LogFormat("[Coloured Arrows #{0}]: Rule seed for Coloured Arrows does not exist yet. It will be implemented at some point. Just be patient.", moduleId);
+            Debug.LogFormat("[Coloured Arrows #{0}]: Rule seed handler for Coloured Arrows does not exist. Using default instructions.", moduleId);
             possibleIdxGoalColors.Add(0, new[] { 0, 1, 2, 3, });
             possibleIdxGoalColors.Add(1, new[] { 1, 2, 3, 0, });
             possibleIdxGoalColors.Add(2, new[] { 2, 3, 0, 1, });

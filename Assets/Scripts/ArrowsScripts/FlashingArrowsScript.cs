@@ -319,7 +319,7 @@ public class FlashingArrowsScript : BaseArrowsScript {
             HandleColorblindToggle();
             yield break;
         }
-        else if (Regex.IsMatch(command, @"^\s*uldr+\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        else if (Regex.IsMatch(command, @"^\s*[uldr]+\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
         {
             var usableCommand = command.ToLowerInvariant();
             List<int> allPresses = new List<int>();
