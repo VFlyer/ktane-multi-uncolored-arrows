@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title>Coloured Arrows — Keep Talking and Nobody Explodes Module</title>
+    <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1">
+    <title>Coloured Arrows — Keep Talking and Nobody Explodes Module</title>
     <link rel="stylesheet" type="text/css" href="css/font.css">
     <link rel="stylesheet" type="text/css" href="css/normalize.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
@@ -104,6 +104,20 @@
                 baseList.push(firstNum);
             }
             rnd.shuffleFisherYates(combinedList);
+            var shuffleIdxes = [-1,-1,-1,-1];
+            for (var x = 0; x < 4; x++)
+                {
+                    shuffleIdxes[x] = rnd.next(x,3);
+                }
+            for (var x = 0; x < shuffleIdxes.length; x++)
+                {
+                    for (var y = 0; y < combinedList.length; y++)
+                        {
+                            var temp = combinedList[y][x];
+                            combinedList[y][x] = combinedList[y][shuffleIdxes[x]];
+                            combinedList[y][shuffleIdxes[x]] = temp;
+                        }
+                }
             console.log(combinedList);
             redColorIdxes = combinedList[0];
             yellowColorIdxes = combinedList[1];

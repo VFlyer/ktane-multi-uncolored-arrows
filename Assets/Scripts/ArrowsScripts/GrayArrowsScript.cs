@@ -56,7 +56,7 @@ public class GrayArrowsScript : MonoBehaviour {
         needySelf.OnTimerExpired += delegate {
             QuickLog("Letting the needy timer run out is not a good idea after all.");
             currentStreak = 0;
-            needySelf.SetResetDelayTime(15 + 5 * currentStreak, 45 + 10 * currentStreak); // Increase reactivation time based on the streak the module is on.
+            needySelf.SetResetDelayTime(15 + 5 * currentStreak, 45 + 10 * currentStreak); // Modify reactivation time based on the streak the module is on.
             needySelf.HandleStrike();
             isActive = false;
         };
@@ -101,29 +101,29 @@ public class GrayArrowsScript : MonoBehaviour {
     }
     void AssignValue()
     {
-        needySelf.SetNeedyTimeRemaining(Mathf.Max(needySelf.CountdownTime - 2 * currentStreak, 35));
+        needySelf.SetNeedyTimeRemaining(Mathf.Max(needySelf.CountdownTime - 2 * currentStreak, 30));
 
         string serialNo = bombInfo.GetSerialNumber();
         if (currentStreak == 0)
         {
-            curRow = char.IsDigit(serialNo[2]) ? int.Parse(serialNo[2].ToString()) : serialNo[2] - 'A' + 1;
-            curCol = char.IsDigit(serialNo[5]) ? int.Parse(serialNo[5].ToString()) : serialNo[5] - 'A' + 1;
+            curCol = char.IsDigit(serialNo[2]) ? int.Parse(serialNo[2].ToString()) : serialNo[2] - 'A' + 1;
+            curRow = char.IsDigit(serialNo[5]) ? int.Parse(serialNo[5].ToString()) : serialNo[5] - 'A' + 1;
             QuickLog(string.Format("Starting position: Row {0}, Col {1}", curRow, curCol));
         }
         int randomDirection = uernd.Range(0, 4);
         switch (randomDirection)
         {
             case 3:
-                curCol -= 1;
+                curCol --;
                 goto default;
             case 2:
-                curRow += 1;
+                curRow ++;
                 goto default;
             case 1:
-                curCol += 1;
+                curCol ++;
                 goto default;
             case 0:
-                curRow -= 1;
+                curRow --;
                 goto default;
             default:
                 curCol = (curCol + 10) % 10;
@@ -132,7 +132,7 @@ public class GrayArrowsScript : MonoBehaviour {
         }
         QuickLog(string.Format("The {0} arrow is shown at {1} streak.", baseDirections[randomDirection], currentStreak));
         QuickLog(string.Format("Current Position after moving based on display: Row {0}, Col {1}", curRow, curCol));
-        QuickLog(string.Format("The desired arrow to press is the {0} arrow.", baseDirections[directionIDxTable[curRow, curCol]]));
+        QuickLog(string.Format("The desired arrow to press is the {0} arrow for this instance.", baseDirections[directionIDxTable[curRow, curCol]]));
         isActive = true;
         StartCoroutine(TypeText(displayDirections[randomDirection].ToString()));
         isanimating = true;
@@ -151,7 +151,7 @@ public class GrayArrowsScript : MonoBehaviour {
             needySelf.HandleStrike();
         }
         textDisplay.text = "";
-        needySelf.SetResetDelayTime(15 + 5 * currentStreak, 45 + 10 * currentStreak); // Increase reactivation time based on the streak the module is on.
+        needySelf.SetResetDelayTime(15 + 5 * currentStreak, 45 + 10 * currentStreak); // Modify reactivation time based on the streak the module is on.
         needySelf.HandlePass();
         isActive = false;
     }
@@ -161,15 +161,19 @@ public class GrayArrowsScript : MonoBehaviour {
         var needyTimer = gameObject.transform.Find("NeedyTimer(Clone)");
         if (needyTimer != null)
         {
+            needyTimer.transform.localEulerAngles += new Vector3(0, 45, 0);
+            needyTimer.transform.localPosition = new Vector3(-.1f, -.005f, -.1f);
+            /*
             var allMeshFilters = needyTimer.GetComponentsInChildren<MeshFilter>(true);
             if (allMeshFilters != null)
             {
                 foreach (MeshFilter oneMesh in allMeshFilters)
                 {
-                    oneMesh.gameObject.transform.localPosition = new Vector3(-.06f, .0225f, -.06f);
+                    oneMesh.gameObject.transform.localPosition = new Vector3(-.1f, .0225f, -.1f);
                     oneMesh.gameObject.transform.localEulerAngles += new Vector3(0, 45, 0);
                 }
             }
+            */
         }
         else
             Debug.Log("needytimer = null");
@@ -191,6 +195,7 @@ public class GrayArrowsScript : MonoBehaviour {
     }
     protected virtual IEnumerator victory() // The default victory animation from eXish's Arrows bretherns
     {
+        textDisplay.transform.localPosition += Vector3.left * .04f;
         isanimating = true;
         for (int i = 0; i < 100; i++)
         {
@@ -252,6 +257,10 @@ public class GrayArrowsScript : MonoBehaviour {
     protected IEnumerator TwitchHandleForcedSolve()
     {
         yield return null;
+        textDisplay.text = "";
+        needySelf.SetResetDelayTime(float.MaxValue, float.MaxValue); // Modify reactivation time to forcably disable the module.
+        needySelf.HandlePass();
+        isActive = false;
     }
 
 }

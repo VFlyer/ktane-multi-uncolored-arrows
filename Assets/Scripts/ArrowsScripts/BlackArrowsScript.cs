@@ -11,7 +11,7 @@ public class BlackArrowsScript : BaseArrowsScript {
     public MeshRenderer[] arrowRenderers;
     public KMBossModule bossModule;
     public KMBombInfo bombInfo;
-    public GameObject[] timerDisplayer;
+    public MeshRenderer[] timerDisplayer;
     public Material[] setMats;
 
     string[] ignoreList = {
@@ -418,16 +418,26 @@ public class BlackArrowsScript : BaseArrowsScript {
         }
         yield return new WaitForSeconds(0.2f);
     }
-    float delayLeft = 0f, maxTimeAllocatable = 5f;
+    float delayLeft = 0f, maxTimeAllocatable = 5f, breatheDelay = 6f;
     void Update()
     {
         for (int x = 0; x < timerDisplayer.Length; x++)
         {
-            timerDisplayer[x].SetActive(delayLeft > 0f && !readyToSolve);
+            timerDisplayer[x].gameObject.SetActive(delayLeft > 0f && !readyToSolve);
             timerDisplayer[x].transform.localScale = new Vector3(delayLeft / maxTimeAllocatable, 1, .005f);
         }
         if (hasStarted && !readyToSolve)
         {
+            if (colorblindActive)
+            {
+                breatheDelay -= Time.deltaTime;
+                if (breatheDelay < 0) breatheDelay = 6f;
+                textDisplay.color = Color.white * (0.5f - Mathf.Abs((breatheDelay / 6f) - 0.5f)) * 2 + firstTextColor * Mathf.Abs((breatheDelay / 6f) - 0.5f) * 2;
+                for (int x = 0; x < timerDisplayer.Length; x++)
+                {
+                    timerDisplayer[x].material.color = Color.white * (0.5f - Mathf.Abs((breatheDelay / 6f) - 0.5f)) * 2 + firstTextColor * Mathf.Abs((breatheDelay / 6f) - 0.5f) * 2;
+                }
+            }
             int solveCount = bombInfo.GetSolvedModuleNames().Count(a => !ignoreList.Contains(a));
             if (delayLeft <= 0f)
             {
@@ -473,25 +483,46 @@ public class BlackArrowsScript : BaseArrowsScript {
         Debug.LogFormat("[Black Arrows #{0}]: {1}", moduleId, toLog);
     }
 
-    private IEnumerator CycleArrowFlashes(float delay)
+    private IEnumerator BreatheArrowFlashes(float delay)
     {
-        int curIdx = uernd.Range(0, 4);
-        bool cycleCCW = uernd.value < 0.5f;
-        while (moduleSolved)
+        //int curIdx = uernd.Range(0, 4);
+        //bool cycleCCW = uernd.value < 0.5f;
+        for (int x = 0; x < arrowRenderers.Length; x++)
+        {
+            arrowRenderers[x].material = setMats[1];
+            arrowRenderers[x].material.color = Color.black;
+        }
+        while (isanimating)
         {
             for (int x = 0; x < arrowRenderers.Length; x++)
             {
-                arrowRenderers[x].material = x == curIdx ? setMats[1] : setMats[0];
+                for (float y = 0; y <= 1f; y += Time.deltaTime / delay * 4f)
+                {
+                    yield return null;
+                    arrowRenderers[x].material.color = Color.white * y;
+                }
+                arrowRenderers[x].material.color = Color.white;
             }
-            curIdx = cycleCCW ? (curIdx + 3) % 4 : (curIdx + 1) % 4;
-            yield return new WaitForSeconds(delay);
+            for (int x = 0; x < arrowRenderers.Length; x++)
+            {
+                for (float y = 0; y <= 1f ; y += Time.deltaTime / delay * 4f)
+                {
+                    yield return null;
+                    arrowRenderers[x].material.color = Color.white * (1f - y);
+                }
+                arrowRenderers[x].material.color = Color.black;
+            }
         }
         yield return null;
+        for (int x = 0; x < arrowRenderers.Length; x++)
+        {
+            arrowRenderers[x].material = setMats[0];
+        }
     }
 
     protected override IEnumerator victory()
     {
-        IEnumerator arrowFlasher = CycleArrowFlashes(0.1f);
+        IEnumerator arrowFlasher = BreatheArrowFlashes(2f);
         isanimating = true;
         StartCoroutine(arrowFlasher);
         for (int i = 0; i < 50; i++)
@@ -511,14 +542,20 @@ public class BlackArrowsScript : BaseArrowsScript {
             int rand2 = uernd.Range(0, 10);
             textDisplay.text = "G" + rand2;
             textDisplay.color = Color.white * (1.0f - (i / 50f)) + firstTextColor * (i / 50f);
+            /*
+            for (int x = 0; x < arrowRenderers.Length; x++)
+            {
+                arrowRenderers[x].material.color = Color.white * (1f - i / 50f);
+            }
+            */
             yield return new WaitForSeconds(0.025f);
         }
         textDisplay.color = firstTextColor;
         textDisplay.text = "GG";
-        StopCoroutine(arrowFlasher);
+        //StopCoroutine(arrowFlasher);
         isanimating = false;
         modSelf.HandlePass();
-
+        /*
         Color[] lastColors = arrowRenderers.Select(a => a.material.color).ToArray();
         for (int i = 0; i <= 10; i++)
         {
@@ -528,10 +565,13 @@ public class BlackArrowsScript : BaseArrowsScript {
             }
             yield return new WaitForSeconds(0.025f);
         }
+        */
+        /*
         for (int x = 0; x < arrowRenderers.Length; x++)
         {
             arrowRenderers[x].material = setMats[0];
         }
+        */
     }
 #pragma warning disable 414
     private readonly string TwitchHelpMessage = "Press the specified arrow button with \"!{0} up/right/down/left\" Words can be substituted as one letter (Ex. right as r). Multiple directions can be issued in one command by spacing them out or as 1 word when abbrevivabted, I.E \"!{0} udlr\". Toggle colorblind mode with \"!{0} colorblind\"";

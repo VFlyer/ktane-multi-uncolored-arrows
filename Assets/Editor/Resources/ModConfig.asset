@@ -25,6 +25,8 @@ MonoBehaviour:
 
     Black Arrows: TasThing
 
+    Gray Arrows: Danny7007
+
 
     Module IDs:
 
@@ -33,6 +35,8 @@ MonoBehaviour:
     Flashing Arrows: flashingArrowsModule
 
     Black Arrows: blackArrowsModule
+
+    Gray Arrows: grayArrowsModule
 
 
     Original Arrows prefab by eXish, modified by VFlyer for multi-purpose usage

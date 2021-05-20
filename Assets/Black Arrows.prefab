@@ -1602,7 +1602,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1cfb889a07d5fd4e9baed7960bb397f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _colorblindMode: 0
+  _colorblindMode: 1
 --- !u!114 &114322925667158410
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1656,8 +1656,8 @@ MonoBehaviour:
   bossModule: {fileID: 114410292281222766}
   bombInfo: {fileID: 114017053236208120}
   timerDisplayer:
-  - {fileID: 1070356487087574}
-  - {fileID: 1633561094691480}
+  - {fileID: 23450376341797478}
+  - {fileID: 23294111276588566}
   setMats:
   - {fileID: 2100000, guid: f842d962ce256e442a37db95317f7634, type: 2}
   - {fileID: 2100000, guid: d914c8388cf91aa4fbe5b74af64b3390, type: 2}

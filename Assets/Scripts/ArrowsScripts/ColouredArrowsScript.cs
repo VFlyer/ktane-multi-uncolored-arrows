@@ -57,6 +57,23 @@ public class ColouredArrowsScript : BaseArrowsScript {
                 }
                 
                 randomizer.ShuffleFisherYates(combinedArrays);
+                // Obtain the idxes to shuffle the columns.
+                var shuffleIdxes = new int[4];
+                for (var x = 0; x < shuffleIdxes.Length; x++)
+                {
+                    shuffleIdxes[x] = randomizer.Next(x, 3);
+                }
+                //Debug.Log(shuffleIdxes.Join());
+                // Shuffle each cell in the array by swapping those respective values.
+                for (var x = 0; x < shuffleIdxes.Length; x++)
+                {
+                    for (var y = 0; y < combinedArrays.Count; y++)
+                    {
+                        var temp = combinedArrays[y][x];
+                        combinedArrays[y][x] = combinedArrays[y][shuffleIdxes[x]];
+                        combinedArrays[y][shuffleIdxes[x]] = temp;
+                    }
+                }
 
                 // Add their respective modifiers
                 for (var x = 0; x < combinedArrays.Count; x++)
