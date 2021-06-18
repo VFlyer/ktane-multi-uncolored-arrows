@@ -130,10 +130,10 @@ public class BlackArrowsScript : BaseArrowsScript {
         {
             int y = x;
             arrowButtons[x].OnInteract += delegate {
-                MAudio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, arrowButtons[y].transform);
-                arrowButtons[y].AddInteractionPunch();
                 if (!(moduleSolved || isanimating))
                 {
+                    MAudio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, arrowButtons[y].transform);
+                    arrowButtons[y].AddInteractionPunch();
                     ProcessInput(y);
                 }
                 return false;
@@ -418,7 +418,7 @@ public class BlackArrowsScript : BaseArrowsScript {
         }
         yield return new WaitForSeconds(0.2f);
     }
-    float delayLeft = 0f, maxTimeAllocatable = 5f, breatheDelay = 6f;
+    float delayLeft = 0f, maxTimeAllocatable = 10f, breatheDelay = 6f;
     void Update()
     {
         for (int x = 0; x < timerDisplayer.Length; x++)
@@ -437,6 +437,11 @@ public class BlackArrowsScript : BaseArrowsScript {
                 {
                     timerDisplayer[x].material.color = Color.white * (0.5f - Mathf.Abs((breatheDelay / 6f) - 0.5f)) * 2 + firstTextColor * Mathf.Abs((breatheDelay / 6f) - 0.5f) * 2;
                 }
+            }
+            else
+            {
+                textDisplay.color = firstTextColor;
+                breatheDelay = 6f;
             }
             int solveCount = bombInfo.GetSolvedModuleNames().Count(a => !ignoreList.Contains(a));
             if (delayLeft <= 0f)
@@ -574,7 +579,8 @@ public class BlackArrowsScript : BaseArrowsScript {
         */
     }
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = "Press the specified arrow button with \"!{0} up/right/down/left\" Words can be substituted as one letter (Ex. right as r). Multiple directions can be issued in one command by spacing them out or as 1 word when abbrevivabted, I.E \"!{0} udlr\". Toggle colorblind mode with \"!{0} colorblind\"";
+    private readonly string TwitchHelpMessage = "Press the specified arrow button with \"!{0} up/right/down/left\" Words can be substituted as one letter (Ex. right as r). "+
+        "Multiple directions can be issued in one command by spacing them out or as a 1 word when abbrevivabted, I.E. \"!{0} udlrrrll\". Alternatively, when abbreviated, you may space out the presses in the command. I.E. \"!{0} lluur ddlr urd\" Toggle colorblind mode with \"!{0} colorblind\"";
 #pragma warning restore 414
     protected override IEnumerator ProcessTwitchCommand(string command)
     {
@@ -590,29 +596,32 @@ public class BlackArrowsScript : BaseArrowsScript {
             HandleColorblindToggle();
             yield break;
         }
-        else if (Regex.IsMatch(command, @"^\s*[uldr]+\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        else if (Regex.IsMatch(command, @"^\s*[uldr\s]+\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
         {
             var usableCommand = command.Trim().ToLowerInvariant();
             List<int> allPresses = new List<int>();
-            foreach (char dir in usableCommand)
+            foreach (string directionportion in usableCommand.Split())
             {
-                switch (dir)
+                foreach (char dir in directionportion)
                 {
-                    case 'u':
-                        allPresses.Add(0);
-                        break;
-                    case 'd':
-                        allPresses.Add(2);
-                        break;
-                    case 'l':
-                        allPresses.Add(3);
-                        break;
-                    case 'r':
-                        allPresses.Add(1);
-                        break;
-                    default:
-                        yield return string.Format("sendtochaterror I do not know what direction \"{0}\" is supposed to be.", dir);
-                        yield break;
+                    switch (dir)
+                    {
+                        case 'u':
+                            allPresses.Add(0);
+                            break;
+                        case 'd':
+                            allPresses.Add(2);
+                            break;
+                        case 'l':
+                            allPresses.Add(3);
+                            break;
+                        case 'r':
+                            allPresses.Add(1);
+                            break;
+                        default:
+                            yield return string.Format("sendtochaterror I do not know what direction \"{0}\" is supposed to be.", dir);
+                            yield break;
+                    }
                 }
             }
             if (allPresses.Any())

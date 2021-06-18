@@ -116,10 +116,12 @@ public class ColouredArrowsScript : BaseArrowsScript {
         {
             int y = x;
             arrowButtons[x].OnInteract += delegate () {
-                arrowButtons[y].AddInteractionPunch(0.25f);
-                MAudio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, arrowButtons[y].transform);
                 if (!moduleSolved && !isanimating)
+                {
+                    arrowButtons[y].AddInteractionPunch(0.25f);
+                    MAudio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, arrowButtons[y].transform);
                     CheckValidArrow(y);
+                }
                 return false;
             };
         }

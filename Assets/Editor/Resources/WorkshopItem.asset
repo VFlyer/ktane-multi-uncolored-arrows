@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Name: WorkshopItem
   m_EditorClassIdentifier: 
   WorkshopPublishedFileID: 2303374775
-  Title: Multicolored and Black Arrows
+  Title: Multicolored and Uncolored Arrows
   Tags:
   - Regular Module

@@ -29,7 +29,7 @@ public class GrayArrowsScript : MonoBehaviour {
     readonly string[] baseDirections = { "Up", "Right", "Down", "Left", };
     private static int moduleIdCounter = 1;
     readonly string displayDirections = "\u25B4\u25B8\u25BE\u25C2";
-    bool isanimating = true, colorblindActive = false, isActive, hasStarted;
+    bool isanimating = true, colorblindActive = false, isActive, hasStarted, forceDisable;
     public TextMesh textDisplay, colorblindArrowDisplay, streakDisplay;
     int moduleId, curRow, curCol, currentStreak;
     void Awake()
@@ -51,7 +51,12 @@ public class GrayArrowsScript : MonoBehaviour {
         textDisplay.text = "";
         needySelf.OnActivate += delegate { hasStarted = true; };
 
-        needySelf.OnNeedyActivation += AssignValue;
+        needySelf.OnNeedyActivation += delegate {
+            if (forceDisable)
+                needySelf.HandlePass();
+            else
+                AssignValue();
+        };
 
         needySelf.OnTimerExpired += delegate {
             QuickLog("Letting the needy timer run out is not a good idea after all.");
@@ -65,11 +70,12 @@ public class GrayArrowsScript : MonoBehaviour {
         {
             int y = x;
             arrowButtons[x].OnInteract += delegate {
-                MAudio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, arrowButtons[y].transform);
-                arrowButtons[y].AddInteractionPunch();
                 if (isActive && !isanimating)
+                {
+                    MAudio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, arrowButtons[y].transform);
+                    arrowButtons[y].AddInteractionPunch();
                     CheckAnswer(y);
-
+                }
                 return false;
             };
         }
@@ -261,6 +267,7 @@ public class GrayArrowsScript : MonoBehaviour {
         needySelf.SetResetDelayTime(float.MaxValue, float.MaxValue); // Modify reactivation time to forcably disable the module.
         needySelf.HandlePass();
         isActive = false;
+        forceDisable = true;
     }
 
 }

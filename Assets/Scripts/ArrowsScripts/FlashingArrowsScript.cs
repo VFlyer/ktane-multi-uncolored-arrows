@@ -119,10 +119,12 @@ public class FlashingArrowsScript : BaseArrowsScript {
         {
             int y = x;
             arrowButtons[x].OnInteract += delegate {
-                arrowButtons[y].AddInteractionPunch();
-                MAudio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, arrowButtons[y].transform);
                 if (!(isanimating || moduleSolved))
+                {
+                    arrowButtons[y].AddInteractionPunch();
+                    MAudio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, arrowButtons[y].transform);
                     ProcessInput(y);
+                }
                 return false;
             };
 
@@ -303,7 +305,7 @@ public class FlashingArrowsScript : BaseArrowsScript {
 
 	}
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = "Press the specified arrow button with \"!{0} up/right/down/left\" Words can be substituted as one letter (Ex. right as r). Multiple directions can be issued in one command by spacing them out or as 1 word when abbrevivabted, I.E \"!{0} udlr\". Toggle colorblind mode with \"!{0} colorblind\"";
+    private readonly string TwitchHelpMessage = "Press the specified arrow button with \"!{0} up/right/down/left\" Words can be substituted as one letter (Ex. right as r). Multiple directions can be issued in one command by spacing them out or as 1 word when abbrevivabted, I.E \"!{0} udlrrrll\". Alternatively, when abbreviated, you may space out the presses in the command. I.E. \"!{0} lluur ddlr urd\" Toggle colorblind mode with \"!{0} colorblind\"";
 #pragma warning restore 414
     protected override IEnumerator ProcessTwitchCommand(string command)
     {
@@ -319,29 +321,32 @@ public class FlashingArrowsScript : BaseArrowsScript {
             HandleColorblindToggle();
             yield break;
         }
-        else if (Regex.IsMatch(command, @"^\s*[uldr]+\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        else if (Regex.IsMatch(command, @"^\s*[uldr\s]+\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
         {
-            var usableCommand = command.ToLowerInvariant();
+            var usableCommand = command.Trim().ToLowerInvariant();
             List<int> allPresses = new List<int>();
-            foreach (char dir in usableCommand)
+            foreach (string directionportion in usableCommand.Split())
             {
-                switch (dir)
+                foreach (char dir in directionportion)
                 {
-                    case 'u':
-                        allPresses.Add(0);
-                        break;
-                    case 'd':
-                        allPresses.Add(2);
-                        break;
-                    case 'l':
-                        allPresses.Add(3);
-                        break;
-                    case 'r':
-                        allPresses.Add(1);
-                        break;
-                    default:
-                        yield return string.Format("sendtochaterror I do not know what direction \"{0}\" is supposed to be.", dir);
-                        yield break;
+                    switch (dir)
+                    {
+                        case 'u':
+                            allPresses.Add(0);
+                            break;
+                        case 'd':
+                            allPresses.Add(2);
+                            break;
+                        case 'l':
+                            allPresses.Add(3);
+                            break;
+                        case 'r':
+                            allPresses.Add(1);
+                            break;
+                        default:
+                            yield return string.Format("sendtochaterror I do not know what direction \"{0}\" is supposed to be.", dir);
+                            yield break;
+                    }
                 }
             }
             if (allPresses.Any())

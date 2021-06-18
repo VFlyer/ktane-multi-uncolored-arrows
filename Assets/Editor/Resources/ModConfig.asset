@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Name: ModConfig
   m_EditorClassIdentifier: 
   id: colorfulAndBlackArrowsMod
-  title: Multicolored and Black Arrows
+  title: Multicolored and Uncolored Arrows
   author: VFlyer, eXish, Madela, R3Ked, TasThing
-  description: 'A collection of 3 Arrow Modules with manual ideas are by the respective
+  description: 'A collection of 4 Arrow Modules with manual ideas are by the respective
     creators.
+
+    Contains Coloured Arrows, Flashing Arrows, Black Arrows, and Gray Arrows
 
     Author of the manual''s respective modules in this collection:
 
@@ -48,6 +50,6 @@ MonoBehaviour:
 
 
     Source Code: https://github.com/VFlyer/ktane-multi-uncolored-arrows'
-  version: 1.1
+  version: 1.3
   outputFolder: build
   previewImage: {fileID: 2800000, guid: 7e77cc94159c66f418cf0ee83896bc68, type: 3}
