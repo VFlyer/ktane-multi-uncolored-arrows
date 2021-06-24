@@ -113,7 +113,7 @@
 					<tr>
 						<th>Yellow</th>
 						<th>Y(x) + x = 2(x - D)</th>
-						<th>Y(x) - D = x + n * b<sub>0</sub></th>
+						<th>Y(x) - D = x + n * a<sub>2</sub></th>
 						<th></th>
 					</tr>
 					<tr>
@@ -214,7 +214,7 @@
 								<li>Purple, the target arrow is the east arrow.</li>
 								<li>Red, the target arrow is the south-east arrow.</li>
 								<li>Orange, the target arrow is the south arrow.</li>
-								<li>Blue , the target arrow is the south-west arrow.</li>
+								<li>Blue, the target arrow is the south-west arrow.</li>
 								<li>White, the target arrow is the west arrow.</li>
 								<li>Green, the target arrow is the north-west arrow.</li>
 							</ul>
@@ -260,7 +260,7 @@
 									<td>4</td>
 								</tr>
 							</table>
-							<p>Using the grid of numbers on the right, (0, 0) will be referred to as the top-left corner of this grid, in (column, row) format, (2, 2) being the dead center of the grid. Start at the center of the grid shown if the displayed value has one or fewer digits. Otherwise, start at the column of the first digit of the displayed value, modulo 5, and the row of the last digit of the displayed value, divided by 2, rounded down. Examine the direction the blue arrow is at and go 1 space in that direction. If you reach the edge of the grid, wrap around to the opposite side, while respecting your current direction. Note the previous value, and rotate the current direction 45 degrees clockwise. Go two spaces in the new direction and note the previous 2 values. Using the last 2 noted values, add them together and modulo the result by 5. With the remaining noted value, determine the distance to reach that result, after mod 5. Starting on the blue arrow and skipping over black and white arrows, count that many arrows count-clockwise if the shortest distance is moving left and clockwise otherwise. The resulting arrow is your target arrow.</p>
+							<p>Using the grid of numbers on the right, (0, 0) will be referred to as the top-left corner of this grid, in (column, row) format, (2, 2) being the dead center of the grid. Start at the center of the grid shown if the displayed value has one or fewer digits. Otherwise, start at the column of the first digit of the displayed value, modulo 5, and the row of the last digit of the displayed value, divided by 2, rounded down. Examine the direction the blue arrow is at and go 1 space in that direction. If you reach the edge of the grid, wrap around to the opposite side, while respecting your current direction. Note the previous value, and rotate the current direction 45 degrees clockwise. Go two spaces in the new direction and note the previous 2 values. Using the last 2 noted values, add them together and modulo the result by 5. With the remaining noted value, determine the distance to reach that result, after mod 5. Starting on the blue arrow and skipping over black and white arrows, count that many arrows counter-clockwise if the shortest distance is moving left and clockwise otherwise. The resulting arrow is your target arrow.</p>
 						</td>
 					</tr>
 				</table>

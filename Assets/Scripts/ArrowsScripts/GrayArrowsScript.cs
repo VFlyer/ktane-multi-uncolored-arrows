@@ -29,9 +29,9 @@ public class GrayArrowsScript : MonoBehaviour {
     readonly string[] baseDirections = { "Up", "Right", "Down", "Left", };
     private static int moduleIdCounter = 1;
     readonly string displayDirections = "\u25B4\u25B8\u25BE\u25C2";
-    bool isanimating = true, colorblindActive = false, isActive, hasStarted, forceDisable;
-    public TextMesh textDisplay, colorblindArrowDisplay, streakDisplay;
-    int moduleId, curRow, curCol, currentStreak;
+    bool isanimating = true, colorblindActive = false, isActive, forceDisable;
+    public TextMesh textDisplay, colorblindArrowDisplay;
+    int moduleId, curRow, curCol, consectutiveCorrectPresses;
     void Awake()
     {
         try
@@ -42,6 +42,10 @@ public class GrayArrowsScript : MonoBehaviour {
         {
             colorblindActive = false;
         }
+        finally
+        {
+            HandleColorblindToggle();
+        }
     }
 
     // Use this for initialization
@@ -49,7 +53,6 @@ public class GrayArrowsScript : MonoBehaviour {
         moduleId = moduleIdCounter++;
 
         textDisplay.text = "";
-        needySelf.OnActivate += delegate { hasStarted = true; };
 
         needySelf.OnNeedyActivation += delegate {
             if (forceDisable)
@@ -60,10 +63,11 @@ public class GrayArrowsScript : MonoBehaviour {
 
         needySelf.OnTimerExpired += delegate {
             QuickLog("Letting the needy timer run out is not a good idea after all.");
-            currentStreak = 0;
-            needySelf.SetResetDelayTime(15 + 5 * currentStreak, 45 + 10 * currentStreak); // Modify reactivation time based on the streak the module is on.
+            consectutiveCorrectPresses = 0;
+            //needySelf.SetResetDelayTime(15 + 5 * consectutiveCorrectPresses, 45 + 10 * consectutiveCorrectPresses); // Modify reactivation time based on the streak the module is on.
             needySelf.HandleStrike();
             isActive = false;
+            textDisplay.text = "";
         };
 
         for (int x = 0; x < arrowButtons.Length; x++)
@@ -83,34 +87,21 @@ public class GrayArrowsScript : MonoBehaviour {
         needySelf.OnNeedyDeactivation += delegate
         {
             StartCoroutine(victory());
-            hasStarted = false;
         };
 
         bombInfo.OnBombSolved += delegate {
             StartCoroutine(victory());
-            hasStarted = false;
         };
 
         StartCoroutine(DelayRotation());
         
     }
-    void Update()
-    {
-        if (hasStarted)
-            streakDisplay.text = isActive ? "" : string.Format("{0} streak!", currentStreak);
-        else
-        {
-            string curDisplay = streakDisplay.text;
-            if (!string.IsNullOrEmpty(curDisplay))
-                streakDisplay.text = streakDisplay.text.Substring(0, curDisplay.Length - 1);
-        }
-    }
     void AssignValue()
     {
-        needySelf.SetNeedyTimeRemaining(Mathf.Max(needySelf.CountdownTime - 2 * currentStreak, 30));
+        //needySelf.SetNeedyTimeRemaining(Mathf.Max(needySelf.CountdownTime - 2 * consectutiveCorrectPresses, 30));
 
         string serialNo = bombInfo.GetSerialNumber();
-        if (currentStreak == 0)
+        if (consectutiveCorrectPresses == 0)
         {
             curCol = char.IsDigit(serialNo[2]) ? int.Parse(serialNo[2].ToString()) : serialNo[2] - 'A' + 1;
             curRow = char.IsDigit(serialNo[5]) ? int.Parse(serialNo[5].ToString()) : serialNo[5] - 'A' + 1;
@@ -136,7 +127,7 @@ public class GrayArrowsScript : MonoBehaviour {
                 curRow = (curRow + 10) % 10;
                 break;
         }
-        QuickLog(string.Format("The {0} arrow is shown at {1} streak.", baseDirections[randomDirection], currentStreak));
+        QuickLog(string.Format("The {0} arrow is shown at {1} consectutive press(es).", baseDirections[randomDirection], consectutiveCorrectPresses));
         QuickLog(string.Format("Current Position after moving based on display: Row {0}, Col {1}", curRow, curCol));
         QuickLog(string.Format("The desired arrow to press is the {0} arrow for this instance.", baseDirections[directionIDxTable[curRow, curCol]]));
         isActive = true;
@@ -147,17 +138,17 @@ public class GrayArrowsScript : MonoBehaviour {
     {
         if (directionIdx == directionIDxTable[curRow, curCol])
         {
-            currentStreak++;
+            consectutiveCorrectPresses++;
         }
         else
         {
-            QuickLog(string.Format( "Strike! The {0} was incorrectly pressed at {1} streak! Resetting streak to 0.",
-                baseDirections[directionIdx], currentStreak));
-            currentStreak = 0;
+            QuickLog(string.Format("Strike! The {0} arrow was incorrectly pressed at {1} consectutive correct press(es)! Resetting the number of consectutive correct presses to 0.",
+                baseDirections[directionIdx], consectutiveCorrectPresses));
+            consectutiveCorrectPresses = 0;
             needySelf.HandleStrike();
         }
         textDisplay.text = "";
-        needySelf.SetResetDelayTime(15 + 5 * currentStreak, 45 + 10 * currentStreak); // Modify reactivation time based on the streak the module is on.
+        //needySelf.SetResetDelayTime(15 + 5 * consectutiveCorrectPresses, 45 + 10 * consectutiveCorrectPresses); // Modify reactivation time based on the streak the module is on.
         needySelf.HandlePass();
         isActive = false;
     }
@@ -195,6 +186,12 @@ public class GrayArrowsScript : MonoBehaviour {
         yield return new WaitForSeconds(0.2f);
         isanimating = false;
     }
+
+    void HandleColorblindToggle()
+    {
+        colorblindArrowDisplay.gameObject.SetActive(colorblindActive);
+    }
+
     void QuickLog(string value)
     {
         Debug.LogFormat("[Gray Arrows #{0}] {1}", moduleId,value);
@@ -206,14 +203,13 @@ public class GrayArrowsScript : MonoBehaviour {
         for (int i = 0; i < 100; i++)
         {
             int rand1 = uernd.Range(0, 10);
-            int rand2 = uernd.Range(0, 10);
             if (i < 50)
             {
-                textDisplay.text = rand1 + "" + rand2;
+                textDisplay.text = rand1 + "";
             }
             else
             {
-                textDisplay.text = "G" + rand2;
+                textDisplay.text = "G" + rand1;
             }
             yield return new WaitForSeconds(0.025f);
         }
@@ -221,7 +217,7 @@ public class GrayArrowsScript : MonoBehaviour {
         isanimating = false;
     }
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = "Press the specified arrow button with \"!{0} up/right/down/left\" Words can be substituted as one letter (Ex. right as r) Toggle colorblind mode with \"!{0} colorblind\" (This is a needy module, so try not to confuse this with another module!)";
+    private readonly string TwitchHelpMessage = "Press the specified arrow button with \"!{0} up/right/down/left\" Words can be substituted as one letter (Ex. right as r) Toggle colorblind mode with \"!{0} colorblind\"";
 #pragma warning restore 414
     protected IEnumerator ProcessTwitchCommand(string command)
     {
@@ -234,7 +230,7 @@ public class GrayArrowsScript : MonoBehaviour {
         {
             yield return null;
             colorblindActive = !colorblindActive;
-            //HandleColorblindToggle();
+            HandleColorblindToggle();
             yield break;
         }
         else if (Regex.IsMatch(command, @"^\s*u(p)?\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))

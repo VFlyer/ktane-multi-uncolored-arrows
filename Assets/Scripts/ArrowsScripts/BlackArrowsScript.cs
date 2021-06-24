@@ -479,7 +479,15 @@ public class BlackArrowsScript : BaseArrowsScript {
                 }
             }
             else
+            {
                 delayLeft -= Time.deltaTime;
+                if (!isFlashing)
+                {
+                    isFlashing = true;
+                    currentFlashingDirection = FlashingGivenDirection(allDirectionIdxs[currentStageNum], allRepeatCounts[currentStageNum]);
+                    StartCoroutine(currentFlashingDirection);
+                }
+            }
         }
     }
 
