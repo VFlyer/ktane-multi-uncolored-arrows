@@ -86,10 +86,7 @@ public class GrayArrowsScript : MonoBehaviour {
 
         needySelf.OnNeedyDeactivation += delegate
         {
-            StartCoroutine(victory());
-        };
-
-        bombInfo.OnBombSolved += delegate {
+            isActive = false;
             StartCoroutine(victory());
         };
 
@@ -198,7 +195,7 @@ public class GrayArrowsScript : MonoBehaviour {
     }
     protected virtual IEnumerator victory() // The default victory animation from eXish's Arrows bretherns
     {
-        textDisplay.transform.localPosition += Vector3.left * .04f;
+        textDisplay.transform.localPosition += Vector3.left * .02f;
         isanimating = true;
         for (int i = 0; i < 100; i++)
         {
