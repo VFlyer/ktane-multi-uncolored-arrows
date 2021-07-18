@@ -90,7 +90,7 @@ public class GrayArrowsScript : MonoBehaviour {
             StartCoroutine(victory());
         };
 
-        StartCoroutine(DelayRotation());
+        //StartCoroutine(DelayRotation());
         
     }
     void AssignValue()
@@ -149,6 +149,7 @@ public class GrayArrowsScript : MonoBehaviour {
         needySelf.HandlePass();
         isActive = false;
     }
+    /*
     IEnumerator DelayRotation()
     {
         yield return null;
@@ -168,10 +169,12 @@ public class GrayArrowsScript : MonoBehaviour {
                 }
             }
             */
+    /*
         }
         else
             Debug.Log("needytimer = null");
     }
+    */
     IEnumerator TypeText(string value)
     {
         textDisplay.text = "";
