@@ -55,6 +55,7 @@ public class GrayArrowsScript : MonoBehaviour {
         textDisplay.text = "";
 
         needySelf.OnNeedyActivation += delegate {
+            needySelf.SetResetDelayTime(20, 80);
             if (forceDisable)
                 needySelf.HandlePass();
             else
@@ -175,6 +176,25 @@ public class GrayArrowsScript : MonoBehaviour {
             Debug.Log("needytimer = null");
     }
     */
+    void ChangeTimerText(string value)
+    {
+        var needyTimer = gameObject.transform.Find("NeedyTimer(Clone)");
+        if (needyTimer != null)
+        {
+            var textTimer = needyTimer.GetComponentInChildren<TextMesh>();
+            if (textTimer != null)
+            {
+                textTimer.text = value;
+                textTimer.gameObject.SetActive(true);
+            }
+            else
+            {
+                Debug.Log("textTimer = null");
+            }
+        }
+        else
+            Debug.Log("needytimer = null");
+    }
     IEnumerator TypeText(string value)
     {
         textDisplay.text = "";
@@ -198,6 +218,7 @@ public class GrayArrowsScript : MonoBehaviour {
     }
     protected virtual IEnumerator victory() // The default victory animation from eXish's Arrows bretherns
     {
+        //ChangeTimerText("66");
         textDisplay.transform.localPosition += Vector3.left * .02f;
         isanimating = true;
         for (int i = 0; i < 100; i++)
