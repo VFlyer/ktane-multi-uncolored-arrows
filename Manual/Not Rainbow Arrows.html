@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <script src="js/ktane-utils.js"></script>
     <style>
-        table {
+        table:not(.skip) {
             margin-top: 1em;
             margin-bottom: 1em;
             font-size: 0.875em;
@@ -20,25 +20,54 @@
             margin: 1em;
             font-size: 0.9em;
         }
-
-        th.sideways {
-            width: 8px;
+        td {
+            text-align: center;
         }
-        th.sideways div.cardinal {
-            position: absolute;
-            transform-origin: 8px 12px;
-            transform: rotate(270deg);
-        }
-        th.sideways div.diagonal {
-            position: absolute;
-            transform-origin: 18px 22px;
-            transform: rotate(270deg);
-        }
-
         .continued {
             text-align: right;
             font-style: italic;
             font-size: 10pt;
+        }
+        .squeeze {
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+        .wide {
+            width: 100%;
+        }
+        .bigger {
+            font-size: 150%;
+        }
+        .center {
+            margin: auto;
+        }
+        body:not(.dark) .page-bg-cst-2bits {
+            background-image: url("img/Not%20Rainbow%20Arrows/page-bg-cst-twobits.png");
+        }
+        body.dark .page-bg-cst-2bits {
+            background-image: url("img/Not%20Rainbow%20Arrows/page-bg-cst-twobits-dark.png");
+        }
+        body:not(.dark) .page-bg-cst-bh {
+            background-image: url("img/Not%20Rainbow%20Arrows/page-bg-cst-blackhole.png");
+        }
+        body.dark .page-bg-cst-bh {
+            background-image: url("img/Not%20Rainbow%20Arrows/page-bg-cst-blackhole-dark.png");
+        }
+        body:not(.dark) .page-bg-cst-storegbra {
+            background-image: url("img/Not%20Rainbow%20Arrows/page-bg-cst-blackhole.png");
+        }
+        body.dark .page-bg-cst-storegbra {
+            background-image: url("img/Not%20Rainbow%20Arrows/page-bg-cst-blackhole-dark.png");
+        }
+        .dark .empty
+        {
+            border-style: none;
+            border-collapse: separate;
+        }
+        .empty
+        {
+            border-style: none;
+            border-collapse: separate;
         }
     </style>
 </head>
@@ -50,20 +79,22 @@
                 <span class="page-header-section-title">Not Rainbow Arrows</span>
             </div>
             <div class="page-content">
-                <img src="img/Component/Rainbow Arrows.svg" class="diagram">
+                <img src="img/Component/Not Rainbow Arrows.svg" class="diagram">
                 <h2>On the Subject of Not Rainbow Arrows</h2>
-                <p class="flavour-text">What do you mean, "Point at Inverted Stores' Calculations!?" It points to nonsense!</p>
-				<p>This module has eight arrow buttons in a randomized rainbow color arrangement, and a display screen in the center showing a randomly colored number from -7812 to 7812 inclusive. The eight possible colors the module can show are red, orange, yellow, green, blue, purple/violet, white, and black.</p>
-				<p><strong>If the expert is not prepared to do extreme levels of calculation, tell the defuser to discard this module immediately. Do not continue looking at this manual. Do not ask the defuser about it. Just. Throw it away. Burn the manual.</strong></p>
-				<p>Examine the flashes for each stage and perform mathematical operations to the values given to submit in balanced quinary, or balanced base-5. Tilting the provided casing may assist with finding the flashes better. Each flash from the arrows will denote a function from a table on this manual that must be performed on the current value. There are 3 stages to go through with each stage after the first adding one more flash than the previous stage, and the first stage having 2 flashes before the center text changes color briefly. <strong>The module may start on a later stage</strong>, so be careful! Completing a stage WILL change the color of the text, which will require the expert to obtain a different sequence.</p>
-				<p>Each stage will utilize an initial value alongside a value that you must submit at the end of the stage. In addition, the values each colored arrow are assigned a different power of a given base that the expert must determine.</p>
-				<h2>Contents on This Manual:</h2>
-				<ul>
-					<li><h3>Obtaining the Calculated Value</h3></li>
-					<li><h3>Submitting the Calculated Value</h3></li>
-				</ul>
+                <p class="flavour-text">What do you mean, "Point at Inverted Stores' Calculations!?" It points to the void and two useless bits!</p>
+                <p>This module has eight arrow buttons in a randomized rainbow color arrangement, and a display screen in the center showing a flashing number from 00 to 77. The eight possible colors the module can show are red, orange, yellow, green, blue, purple/violet, white, and black. When not submitting, there are 6 sets of flashing arrows followed by the text flashing a different color, denoting the end of the arrow flashing sequence.</p>
+                <p><strong>If the expert is not prepared to do algebra, tell the defuser to discard this module immediately. Do not continue looking at this manual. Do not ask the defuser about it. Just. Throw it away. Burn the manual.</strong></p>
+                <p>To solve the module, the defuser will need to query a series of 2 colors and read out the response shown from the module. The response shown will be in base-8 or octal. Go through the procedure for each response to get the next sequence of colors to query. Once the defuser has queried for the third response, determine the value to submit based on the response of that query.</p>
+                <p>To query on the module, press the two arrow colors and then the display to query for the response. To submit on the module, press the display while no arrows are pressed, press the two arrow colors in order, and then the display again to submit. If the defuser wants to exit out of submission, press the display while no arrows have been inputted. <strong>Do not query or submit with 1 color pressed, or interact while the module is processing the query. This will cause a strike and display an error message on the module for a few seconds before reverting back to its initial state.</strong></p>
+                <h1>Contents on This Manual:</h1>
+                <ul>
+                    <li><h2 class="squeeze">The First Query</h2></li>
+                    <li><h2 class="squeeze">The Second Query</h2></li>
+                    <li><h2 class="squeeze">The Third Query</h2></li>
+                    <li><h2 class="squeeze">Submission The Response</h2></li>
+                </ul>
             </div>
-            <div class="page-footer relative-footer">Page 1 of 3</div>
+            <div class="page-footer relative-footer">Page 1 of 5</div>
         </div>
         <div class="page page-bg-01">
             <div class="page-header">
@@ -71,276 +102,324 @@
                 <span class="page-header-section-title">Not Rainbow Arrows</span>
             </div>
             <div class="page-content">
-                <h2>Obtaining the Calculated Value</h2>
-				<p>Each arrow flash denotes an equation for each stage which the expert will need to calculate. A standard flash (1 specific color flash) will require the expert to solve for the output value, typically labeled as F(x). This is done by substituting x with a<sub>n-1</sub>, b<sub>n-1</sub>, or c<sub>n-1</sub> and solving for F(x), after applying other variables. An inverted flash (all but that specific color flash) will require the expert to solve for the input value, or x. This is also done in a similar fashion to solving for F(x) but with substituting F(x) with a<sub>n-1</sub>, b<sub>n-1</sub>, or c<sub>n-1</sub> and solving for x. The equations from the table underneath shown <strong>will not</strong> all be in F(x) = m * x + b format. Some manipulation to the equation is required.</p>
-				<p>If the calculated value after finding the given variable is:</p>
-				<ul>
-					<li><strong>greater than 7812, subtract 7813 to the value until it is 7812 or lower.</strong></li>
-					<li><strong>smaller than -7812, add 7813 to the value until it is -7812 or higher.</strong></li>
-				</ul>
-				<p>For the initial values:</p>
-				<ul>
-					<li>a<sub>0</sub> is the displayed value on the module.</li>
-					<li>b<sub>0</sub> is the last 3 base-36 digits in the serial number, modulo 15625, minus 7812. See the manual from Unfair's Revenge for obtaining the base-36 value.</li>
-					<li>c<sub>0</sub> is the first 3 base-36 digits in the serial number, modulo 15625, minus 7812. See the manual from Unfair's Revenge for obtaining the base-36 value.</li>
-				</ul>
-				<p>Other Variable Identifications:</p>
-				<ul>
-					<li>D = Sum of base 36 digits in serial number</li>
-					<li>n = Current step in the calculations, 1 being the first step</li>
-					<li>p<sub>n</sub> = the value at the specified step of the sequence. ("p" can be a, b, or c when specified, if n is not substituted, it can refer to the specific step of the calculations)</li>
-				</ul>
-				<p>a<sub>2</sub>, b<sub>3</sub>, c<sub>4</sub> are stages 1, 2, and 3's values to submit respectively.</p>
-				<table style="width: 100%">
-					<tr>
-						<th style="width: 16%">Color Flashed</th>
-						<th style="width: 28%">a</th>
-						<th style="width: 28%">b</th>
-						<th style="width: 28%">c</th>
-					</tr>
-					<tr>
-						<th>Red</th>
-						<th>R(x) = x + D</th>
-						<th>R(x) - D = x + a<sub>n-1</sub></th>
-						<th></th>
-					</tr>
-					<tr>
-						<th>Orange</th>
-						<th>O(x) + x = D + 10 ^ N</th>
-						<th>O(x) - x = b<sub>0</sub> + D * n * n</th>
-						<th></th>
-					</tr>
-					<tr>
-						<th>Yellow</th>
-						<th>Y(x) + x = 2(x - D)</th>
-						<th>Y(x) - D = x + n * a<sub>2</sub></th>
-						<th></th>
-					</tr>
-					<tr>
-						<th>Green</th>
-						<th>(n + 9)^2 - 2*x = G(x) - x</th>
-						<th>a<sub>1</sub> - G(x) = x - D</th>
-						<th></th>
-					</tr>
-					<tr>
-						<th>Blue</th>
-						<th>n * D + x = B(x) - D</th>
-						<th></th>
-						<th></th>
-					</tr>
-					<tr>
-						<th>Purple/Violet</th>
-						<th>a<sub>0</sub> + x = P(x) + D * n</th>
-						<th></th>
-						<th></th>
-					</tr>
-				</table>
+                <h2>The First Query</h2>
+                <p>To obtain the first query, create 3 pairs of values from the serial number; by taking the 1st and 2nd, 3rd and 4th, 5th and 6th, all as separate pairs; converting letters into their A1Z26 counterpart. Take the sum of each pair and and modulo them all by 8 to obtain 3 separate values. These three values are referred as Z, Y, and X respectively.</p>
+                <p>Find the row representing Z in the table provided to get a series of colors that represent the octal values 0-8 in that order. This row will be used for later queries.</p>
+                <p>If an empty port plate is present, the color representing Y will be the first color in the pair to query and the color representing X will be the second color in the pair to query.</p>
+                <p>Otherwise, the color representing X will be the first color in the pair to query and the color representing Y will be the second color in the pair to query.</p>
+                <p>For each cell in the table, each letter is represented by their first letter in the color name, except black which is represented with "K" to avoid confusion with blue.</p>
+                <table class="skip wide bigger">
+                    <tr>
+                        <th rowspan="2">Z</th>
+                        <th colspan="8">Octal Digit Represented By Color</th>
+                    </tr>
+                    <tr>
+                        <th>0</th>
+                        <th>1</th>
+                        <th>2</th>
+                        <th>3</th>
+                        <th>4</th>
+                        <th>5</th>
+                        <th>6</th>
+                        <th>7</th>
+                    </tr>
+                    <tr>
+                        <th>0</th>
+                        <td>R</td>
+                        <td>K</td>
+                        <td>Y</td>
+                        <td>W</td>
+                        <td>O</td>
+                        <td>G</td>
+                        <td>P</td>
+                        <td>B</td>
+                    </tr>
+                    <tr>
+                        <th>1</th>
+                        <td>Y</td>
+                        <td>O</td>
+                        <td>B</td>
+                        <td>G</td>
+                        <td>R</td>
+                        <td>K</td>
+                        <td>W</td>
+                        <td>P</td>
+                    </tr>
+                    <tr>
+                        <th>2</th>
+                        <td>B</td>
+                        <td>Y</td>
+                        <td>K</td>
+                        <td>R</td>
+                        <td>W</td>
+                        <td>P</td>
+                        <td>G</td>
+                        <td>O</td>
+                    </tr>
+                    <tr>
+                        <th>3</th>
+                        <td>G</td>
+                        <td>R</td>
+                        <td>P</td>
+                        <td>O</td>
+                        <td>K</td>
+                        <td>W</td>
+                        <td>B</td>
+                        <td>Y</td>
+                    </tr>
+                    <tr>
+                        <th>4</th>
+                        <td>P</td>
+                        <td>B</td>
+                        <td>G</td>
+                        <td>K</td>
+                        <td>Y</td>
+                        <td>R</td>
+                        <td>O</td>
+                        <td>W</td>
+                    </tr>
+                    <tr>
+                        <th>5</th>
+                        <td>K</td>
+                        <td>W</td>
+                        <td>O</td>
+                        <td>B</td>
+                        <td>P</td>
+                        <td>Y</td>
+                        <td>R</td>
+                        <td>G</td>
+                    </tr>
+                    <tr>
+                        <th>6</th>
+                        <td>W</td>
+                        <td>G</td>
+                        <td>R</td>
+                        <td>P</td>
+                        <td>B</td>
+                        <td>O</td>
+                        <td>Y</td>
+                        <td>K</td>
+                    </tr>
+                    <tr>
+                        <th>7</th>
+                        <td>O</td>
+                        <td>P</td>
+                        <td>W</td>
+                        <td>Y</td>
+                        <td>G</td>
+                        <td>B</td>
+                        <td>K</td>
+                        <td>R</td>
+                    </tr>
+                </table>
             </div>
-            <div class="page-footer relative-footer">Page 1 of 3</div>
+            <div class="page-footer relative-footer">Page 2 of 5</div>
         </div>
-        <div class="page page-bg-02">
+        <div class="page page-bg-cst-2bits">
             <div class="page-header">
                 <span class="page-header-doc-title">Keep Talking and Nobody Explodes Mod</span>
                 <span class="page-header-section-title">Not Rainbow Arrows</span>
             </div>
             <div class="page-content">
-				<h2>Submitting The Calculated Value</h2>
-				<p>In order to determine the values each colored button has, the expert will need to go through a series of condition in order to figure out which base belongs to the given colored button. Start on the rule corresponding to the color of the text to obtain the color that refers to the given value. Then use the color assigned from the last assigned arrow as the new rule to obtain the next color. Repeat until all of the colors are used up. If the target arrow is already assigned a given base or the target arrow is white or black, take the next arrow based on distance from the target arrow. If multiples on an arrow are not assigned and are tied from distance from the target arrow, assign the one going clockwise from the target color if it's not black or white. I.E. If the colors around the module are white, green, orange, purple, black, red, yellow, blue; and the target color is black, the color that should be taken instead should be red, purple otherwise if red is assigned a value.</p>
-				<table>
-					<tr>
-						<th class="sideways"><div class="cardinal">Color</div></th>
-						<th><br>Instruction<br><br></th>
-					</tr>
-					<tr>
-						<th class="sideways"><div class="cardinal">Green</div></th>
-						<td>
-							<p>Start by creating a 3-digit binary representation based on the following bullet points from top to bottom, most to least significant:</p>
-							<ul>
-								<li>1 if there is a parallel port. 0 otherwise.</li>
-								<li>1 if the displayed value is negative. 0 otherwise.</li>
-								<li>0 if a BOB indicator is present. 1 otherwise.</li>
-							</ul>
-							<p>Converting this to base-10, and starting at North arrow for 0, count that many arrows clockwise to get your target arrow.</p>
-						</td>
-					</tr>
-					<tr>
-						<th class="sideways"><div class="cardinal">Orange</div></th>
-						<td>
-							<p>If this is the starting color, the actual target arrow is diametrically opposite to the orange arrow on the module.</p>
-							<p>Otherwise, go clockwise until you encounter an unassigned colored arrow, starting on the orange arrow. Then go counter-clockwise X times where X is the number of assigned colors up to this point in the calculations. If there is NOT a module that contains the color name of the current arrow, that arrow is your target arrow. (NOTE: Violet will count for Purple if the current arrow is purple.) Otherwise, the target arrow is the one 2 arrows clockwise from the current arrow.</p>
-						</td>
-					</tr>
-					<tr>
-						<th class="sideways"><div class="cardinal">Red</div></th>
-						<td>
-							<p>Examine the displayed value on the module and add  the product of 45 and the number of circular jacks that are present (RCA counts as 2, Component Video counts as 3, etc.). Modulo the result by 360. The target arrow is the arrow whose rotation from north is the closest to that value in degrees. For clarity, the range for the arrow pointing North is 338&deg; to 22&deg;. The other arrows' ranges when calculated clockwise can be found by adding 45&deg; to that given ranges for that given arrow.</p>
-						</td>
-					</tr>
-				</table>
-				<p class="continued">Table continues on next page...</p>
+                <h2>The Second Query</h2>
+                <p>Convert the flashing arrow sequence into a string of 6 binary digits, with the first binary digit represented by the first set of flashing arrows after the text has flashed. White and black will NEVER flash in the arrow sequence, and should NOT be considered for deciding if the flashing set is inverted or not. If all but 1 colored arrow is flashing, that binary digit is represented as a 1. Otherwise, it is represented as a 0.</p>
+                <p>Convert your response from the first query from octal to binary, using the table provided. Create this as another binary string.</p>
+                <table>
+                    <tr>
+                        <th>Oct</th>
+                        <th>Bin</th>
+                        <th>Oct</th>
+                        <th>Bin</th>
+                        <th>Oct</th>
+                        <th>Bin</th>
+                        <th>Oct</th>
+                        <th>Bin</th>
+                        <th>Oct</th>
+                        <th>Bin</th>
+                        <th>Oct</th>
+                        <th>Bin</th>
+                        <th>Oct</th>
+                        <th>Bin</th>
+                        <th>Oct</th>
+                        <th>Bin</th>
+                    </tr>
+                    <tr>
+                        <td>0</td>
+                        <td>000</td>
+                        <td>1</td>
+                        <td>001</td>
+                        <td>2</td>
+                        <td>010</td>
+                        <td>3</td>
+                        <td>011</td>
+                        <td>4</td>
+                        <td>100</td>
+                        <td>5</td>
+                        <td>101</td>
+                        <td>6</td>
+                        <td>110</td>
+                        <td>7</td>
+                        <td>111</td>
+                    </tr>
+                </table>
+                <p>XOR the two binary strings obtained earlier to get a new binary sequence. Take every second binary digit from that sequence to get 1 binary triplet and create the second with the remainder. Convert these two binary triplets into their octal digits, join the octal digits into one octal value, and then cross reference this table to get a new octal value. Query the new octal value with the color arrangement determined for the first query.</p>
+                <table class="skip bigger center" style="border-collapse: separate; border-style: none">
+                    <tr>
+                        <td class="corner empty"></td><th>_0</th><th>_1</th><th>_2</th><th>_3</th><th>_4</th><th>_5</th><th>_6</th><th>_7</th>
+                    </tr>
+                    <tr>
+                        <th>0_</th><td>36</td><td>02</td><td>70</td><td>74</td><td>57</td><td>32</td><td>24</td><td>22</td>
+                    </tr>
+                    <tr>
+                        <th>1_</th><td>40</td><td>30</td><td>06</td><td>17</td><td>64</td><td>34</td><td>51</td><td>47</td>
+                    </tr>
+                    <tr>
+                        <th>2_</th><td>63</td><td>53</td><td>45</td><td>54</td><td>10</td><td>61</td><td>60</td><td>41</td>
+                    </tr>
+                    <tr>
+                        <th>3_</th><td>67</td><td>07</td><td>00</td><td>42</td><td>04</td><td>56</td><td>46</td><td>65</td>
+                    </tr>
+                    <tr>
+                        <th>4_</th><td>16</td><td>62</td><td>77</td><td>26</td><td>31</td><td>12</td><td>66</td><td>25</td>
+                    </tr>
+                    <tr>
+                        <th>5_</th><td>55</td><td>52</td><td>11</td><td>14</td><td>27</td><td>05</td><td>35</td><td>76</td>
+                    </tr>
+                    <tr>
+                        <th>6_</th><td>15</td><td>50</td><td>37</td><td>23</td><td>44</td><td>33</td><td>43</td><td>73</td>
+                    </tr>
+                    <tr>
+                        <th>7_</th><td>75</td><td>72</td><td>03</td><td>21</td><td>20</td><td>13</td><td>71</td><td>01</td>
+                    </tr>
+                </table>
             </div>
-            <div class="page-footer relative-footer">Page 3 of 3</div>
+            <div class="page-footer relative-footer">Page 3 of 5</div>
         </div>
-        <div class="page page-bg-02">
+        <div class="page page-bg-cst-bh">
             <div class="page-header">
                 <span class="page-header-doc-title">Keep Talking and Nobody Explodes Mod</span>
                 <span class="page-header-section-title">Not Rainbow Arrows</span>
             </div>
             <div class="page-content">
-				<h2>Submitting The Calculated Value (Continued)</h2>
-				<table>
-					<tr>
-						<th class="sideways"><div class="cardinal">Color</div></th>
-						<th><br>Instruction<br><br></th>
-					</tr>
-					<tr>
-						<th class="sideways"><div class="diagonal">Purple/Violet</div></th>
-						<td>
-							<p>Assign the colored arrows A-F starting at the first colored arrow going clockwise from white. Afterwards:</p>
-							<ul>
-								<li>If there are any lit indicators that contain at least one of the letters from A to F respectively, add one for each occurrence of that given letter in those indicators. (BOB counts as 2 for B, CAR counts as 1 for A and C, etc.)</li>
-								<li>If there are any unlit indicators that contain at least one of the letters from A to F respectively, add one for the other letters for each occurrence of that given letter in those indicators. (BOB counts as 2 for B, CAR counts as 1 for A and C, etc.)</li>
-							</ul>
-							<p>Now find the letter that has the highest value. If there are multiples that have the highest value, use the letter that comes first in the the expression "FACED B." The colored arrow assigned to that letter is the target arrow.</p>
-						</td>
-					</tr>
-					<tr>
-						<th class="sideways"><div class="cardinal">Yellow</div></th>
-						<td>
-							<p>Examine the north-east arrow. If the color of that arrow is:</p>
-							<ul>
-								<li>Black, the target arrow is the north arrow.</li>
-								<li>Yellow, the target arrow is the that arrow.</li>
-								<li>Purple, the target arrow is the east arrow.</li>
-								<li>Red, the target arrow is the south-east arrow.</li>
-								<li>Orange, the target arrow is the south arrow.</li>
-								<li>Blue, the target arrow is the south-west arrow.</li>
-								<li>White, the target arrow is the west arrow.</li>
-								<li>Green, the target arrow is the north-west arrow.</li>
-							</ul>
-						</td>
-					</tr>
-					<tr>
-						<th class="sideways"><div class="cardinal">Blue</div></th>
-						<td>
-							<table style="float: right">
-								<tr>
-									<td>0</td>
-									<td>1</td>
-									<td>4</td>
-									<td>3</td>
-									<td>2</td>
-								</tr>
-								<tr>
-									<td>4</td>
-									<td>2</td>
-									<td>1</td>
-									<td>0</td>
-									<td>3</td>
-								</tr>
-								<tr>
-									<td>2</td>
-									<td>0</td>
-									<td>3</td>
-									<td>4</td>
-									<td>1</td>
-								</tr>
-								<tr>
-									<td>3</td>
-									<td>4</td>
-									<td>2</td>
-									<td>1</td>
-									<td>0</td>
-								</tr>
-								<tr>
-									<td>1</td>
-									<td>3</td>
-									<td>0</td>
-									<td>2</td>
-									<td>4</td>
-								</tr>
-							</table>
-							<p>Using the grid of numbers on the right, (0, 0) will be referred to as the top-left corner of this grid, in (column, row) format, (2, 2) being the dead center of the grid. Start at the center of the grid shown if the displayed value has one or fewer digits. Otherwise, start at the column of the first digit of the displayed value, modulo 5, and the row of the last digit of the displayed value, divided by 2, rounded down. Examine the direction the blue arrow is at and go 1 space in that direction. If you reach the edge of the grid, wrap around to the opposite side, while respecting your current direction. Note the previous value, and rotate the current direction 45 degrees clockwise. Go two spaces in the new direction and note the previous 2 values. Using the last 2 noted values, add them together and modulo the result by 5. With the remaining noted value, determine the distance to reach that result, after mod 5. Starting on the blue arrow and skipping over black and white arrows, count that many arrows counter-clockwise if the shortest distance is moving left and clockwise otherwise. The resulting arrow is your target arrow.</p>
-						</td>
-					</tr>
-				</table>
-				<p class="continued">Instructions continue on next page...</p>
+                <h2>The Third Query</h2>
+                <p class="squeeze">Use the response that was obtained from the second query and start on the coordinate in reading order based on the grid provided, where 00 is the top-left of the grid. On the grid, start facing in the same direction as the white arrow on the module. Go through this snippet of psudo-code:</p>
+                <ol class="squeeze">
+                    <li>Let <code>I = 0</code>, <code>P</code> be an empty list, and M the number of arrows clockwise from the white arrow to the arrow matching the color of the text when the text flashes.</li>
+                    <li>While <code>I &lt; 4</code>, repeat the following nested steps:
+                        <ol class="squeeze">
+                            <li>Let <code>E</code> be a separate list. and <code>A = 0</code> in this section.</li>
+                            <li>While <code>A &lt; I + 1</code>, repeat the following nested steps:<ol class="squeeze">
+                                <li>Append the value you are on to <code>E</code>.</li>
+                                <li>Move 1 step in the current direction, wrapping around to the other side of the grid if moving to out of bounds.</li>
+                                <li>Add 1 to A.</li>
+                            </ol></li>
+                            <li>Append the sum of all the values in <code>E</code>, modulo 8, on to <code>P</code>.</li>
+                            <li>Rotate 45&deg; clockwise M times.</li>
+                            <li>Add 1 to I.</li>
+                        </ol>
+                    </li>
+                    <li>Take <code>P[0]</code> and XOR it with <code>P[1]</code> to create <code>A</code> in octal, where <code>P[0]</code> is the first element in list <code>P</code>. Likewise, take <code>P[2]</code> and XOR it with <code>P[3]</code> to create <code>B</code> in octal.</li>
+                    <li>Find the cell corresponding to the 2 digit concatenation of <code>A</code>, <code>B</code> from the second query's table and query the respecting color combination from the first query's row.</li>
+                </ol>
+                <table class="skip bigger center">
+                    <tr>    
+                        <td>0</td><td>1</td><td>7</td><td>3</td><td>5</td><td>4</td><td>2</td><td>6</td>
+                    </tr>
+                    <tr>
+                        <td>1</td><td>3</td><td>0</td><td>4</td><td>7</td><td>6</td><td>5</td><td>2</td>
+                    </tr>
+                    <tr>
+                        <td>3</td><td>4</td><td>1</td><td>6</td><td>0</td><td>2</td><td>7</td><td>5</td>
+                    </tr>
+                    <tr>
+                        <td>4</td><td>6</td><td>3</td><td>2</td><td>1</td><td>5</td><td>0</td><td>7</td>
+                    </tr>
+                    <tr>
+                        <td>6</td><td>2</td><td>4</td><td>5</td><td>3</td><td>7</td><td>1</td><td>0</td>
+                    </tr>
+                    <tr>
+                        <td>2</td><td>5</td><td>6</td><td>7</td><td>4</td><td>0</td><td>3</td><td>1</td>
+                    </tr>
+                    <tr>
+                        <td>5</td><td>7</td><td>2</td><td>0</td><td>6</td><td>1</td><td>4</td><td>3</td>
+                    </tr>
+                    <tr>
+                        <td>7</td><td>0</td><td>5</td><td>1</td><td>2</td><td>3</td><td>6</td><td>4</td>
+                    </tr>
+                </table>
             </div>
-            <div class="page-footer relative-footer">Page 3 of 3</div>
+            <div class="page-footer relative-footer">Page 4 of 5</div>
         </div>
-        <div class="page page-bg-02">
+        <div class="page page-bg-cst-storegbra">
             <div class="page-header">
                 <span class="page-header-doc-title">Keep Talking and Nobody Explodes Mod</span>
                 <span class="page-header-section-title">Not Rainbow Arrows</span>
             </div>
             <div class="page-content">
-				<h2>Appendix: Converting Base-5 To Balanced Quinary</h2>
-				<p>To convert a base-5 value to balanced quinary, perform the following steps from right to left on the given value:</p>
-				<table style="float: right">
-					<tr>
-						<td>625</td>
-						<td>125</td>
-						<td>25</td>
-						<td>5</td>
-						<td>1</td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td>4</td>
-						<td>0</td>
-						<td>2</td>
-						<td>3</td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td>4</td>
-						<td>0</td>
-						<td>2+1</td>
-						<td>3-5</td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td>4</td>
-						<td>0</td>
-						<td>3</td>
-						<td>-2</td>
-					</tr>
-					<tr>
-						<td>1+1</td>
-						<td>4-5</td>
-						<td>0</td>
-						<td>3</td>
-						<td>-2</td>
-					</tr>
-					<tr>
-						<td>2</td>
-						<td>-1</td>
-						<td>0</td>
-						<td>3</td>
-						<td>-2</td>
-					</tr>
-				</table>
-				<ol>
-					<li>Start with the least significant digit in that set.</li>
-					<li>
-						Repeat the following procedure until there are no more significant digits to convert:
-						<ul>
-							<li>If the digit is a 0, 1, or 2, leave that digit alone.</li>
-							<li>If the digit is a 3, 4, or 5 (after adding), subtract 5 to this digit and add one to the more significant digit.</li>
-							<li>Go to the more significant digit and check on the top 2 statements above.</li>
-						</ul>
-					</li>
-					<li>This should result in your balanced quinary.</li>
-				</ol>
-				<h2>Appendix: Converting Base 10 to Base 5</h2>
-				<ol>
-					<li>Start with your current base-10 value that you have.</li>
-					<li>Take your current base-10 value and modulo it by 5.</li>
-					<li>Assign that as your least significant digit on the module and divide your original base-10 value by 5, dropping any decimals/remainders.</li>
-					<li>Repeat the previous 2 steps with your new base-10 value while adding more significant digits to each, until your base-10 value after dividing is 0.</li>
-				</ol>
+                <h2 class="squeeze">Submitting The Response</h2>
+                <p class="squeeze">To submit the response, use the initially displayed value, all responses from the queries you have up to this point, and the 6 sets of arrow flashes that have occurred. Examine the ports present, and omit the flashes whose position is the most amount of the ports of that type listed in this table. If there is a tie for the highest amount of ports, omit multiple positions that are tied to their highest occurring port type, <strong>unless there is a 4, 5, or 6-way tie, omit the 1st, 3rd, and 5th flashes in that set.</strong></p>
+                <table class="skip">
+                    <tr>
+                        <th>Port Type</th>
+                        <th>Parallel</th>
+                        <th>Serial</th>
+                        <th>PS/2</th>
+                        <th>RJ-45</th>
+                        <th>Stereo RCA</th>
+                        <th>DVI-D</th>
+                    </tr>
+                    <tr>
+                        <th>Position To Omit</th>
+                        <td>2nd</td>
+                        <td>6th</td>
+                        <td>3rd</td>
+                        <td>4th</td>
+                        <td>5th</td>
+                        <td>1st</td>
+                    </tr>
+                </table>
+                <table class="skip" style="float: right; width: 40%">
+                    <tr>
+                        <th>Color<br>Flashed</th>
+                        <th>Equation</th>
+                    </tr>
+                    <tr>
+                        <td>Red</td>
+                        <td>R(x) = x + A<sub>0</sub></td>
+                    </tr>
+                    <tr>
+                        <td>Orange</td>
+                        <td>O(x) + A<sub>1</sub> = x</td>
+                    </tr>
+                    <tr>
+                        <td>Yellow</td>
+                        <td>Y(x) + (2<sup>n</sup> - 1) = A<sub>2</sub> - x</td>
+                    </tr>
+                    <tr>
+                        <td>Green</td>
+                        <td>G(x) + x = 2(x + &sum;A / 6)</td>
+                    </tr>
+                    <tr>
+                        <td>Blue</td>
+                        <td>x - 2 * B(x) - 2 * n = min(A) - B(x)</td>
+                    </tr>
+                    <tr>
+                        <td>Purple</td>
+                        <td>3 * P(x) - 2 * x = max(A) - x + 4 * P(x)</td>
+                    </tr>
+                </table>
+                <p class="squeeze">Go through the rest of the flashing sets and find it's respective equation based on the color it flashed. Solve for x if the flash is inverted or F(x) otherwise by plugging on the opposing variable (solving for F(x), plug in x, and vice versa, after plugging in the other values), the last value that was used to calculate the set of flashes, or the displayed value if this is the first set. <strong>Keep the calculated value within 0 to 63 by adding or subtracting 64 repeatedly if the calculated value in base 10 after the current flash set is not. Omit decimals when dividing, I.E. make 24.5555 become 24, NOT 25.</strong> On the table provided:</p>
+                <ul>
+                    <li>A is the list of responses obtained up to this point.</li>
+                    <li>A<sub>n</sub> refers to the response that was queried (n + 1)th.</li>
+                    <li>n is the position of the current remaining flashing set when the equation is used, with the first set being 0.</li>
+                    <li>min(A) refers to the minimum value from list A.</li>
+                    <li>max(A) refers to the minimum value from list A.</li>
+                    <li>&sum;A refers to the sum of all of the values from list A.</li>
+                </ul>
+                <p>Use the result of the last calculated flashing set to reference the second query's table to get a new value. Use the color representation of the new value to submit the response.</p>
             </div>
-            <div class="page-footer relative-footer">Page 3 of 3</div>
+            <div class="page-footer relative-footer">Page 5 of 5</div>
         </div>
     </div>
 </body>

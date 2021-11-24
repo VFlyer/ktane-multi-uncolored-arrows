@@ -59,31 +59,31 @@ public class FlashingArrowsScript : BaseArrowsScript {
             new int[] { 1, 0, 2, 3 },
         },
         new int[][] { // Blue Row
-            new int[] { 3,0,1,2 },
-            new int[] { 1,2,0,3 },
-            new int[] { 2,3,0,1 },
-            new int[] { 2,3,1,0 },
-            new int[] { 1,0,3,2 },
-            new int[] { 2,0,1,3 },
-            new int[] { 1,0,3,2 },
+            new int[] { 3, 0, 1, 2 },
+            new int[] { 1, 2, 0, 3 },
+            new int[] { 2, 3, 0, 1 },
+            new int[] { 2, 3, 1, 0 },
+            new int[] { 1, 0, 3, 2 },
+            new int[] { 2, 0, 1, 3 },
+            new int[] { 1, 0, 3, 2 },
         },
         new int[][] { // Purple Row
-            new int[] { 3,0,2,1 },
-            new int[] { 0,3,2,1 },
-            new int[] { 0,2,3,1 },
-            new int[] { 3,2,1,0 },
-            new int[] { 3,0,2,1 },
-            new int[] { 2,1,0,3 },
-            new int[] { 1,0,2,3 },
+            new int[] { 3, 0, 2, 1 },
+            new int[] { 0, 3, 2, 1 },
+            new int[] { 0, 2, 3, 1 },
+            new int[] { 3, 2, 1, 0 },
+            new int[] { 3, 0, 2, 1 },
+            new int[] { 2, 1, 0, 3 },
+            new int[] { 1, 0, 2, 3 },
         },
         new int[][] { // White Row
-            new int[] { 2,3,1,0 },
-            new int[] { 1,3,2,0 },
-            new int[] { 2,3,1,0 },
-            new int[] { 1,3,2,0 },
-            new int[] { 2,0,1,3 },
-            new int[] { 2,1,3,0 },
-            new int[] { 1,0,2,3 },
+            new int[] { 2, 3, 1, 0 },
+            new int[] { 1, 3, 2, 0 },
+            new int[] { 2, 3, 1, 0 },
+            new int[] { 1, 3, 2, 0 },
+            new int[] { 2, 0, 1, 3 },
+            new int[] { 2, 1, 3, 0 },
+            new int[] { 1, 0, 2, 3 },
         },
     };
 
@@ -139,19 +139,19 @@ public class FlashingArrowsScript : BaseArrowsScript {
         }
         if (correctPresses[curPos] == idxArrow)
         {
-            QuickLog(string.Format("You pressed {0} which is correct on position {1}!", debugDirections[idxArrow], curPos + 1));
+            QuickLogFormat("You pressed {0} which is correct on position {1}!", debugDirections[idxArrow], curPos + 1);
             curPos++;
             if (curPos >= 4)
             {
                 moduleSolved = true;
-                QuickLog(string.Format("Module solved."));
+                QuickLog("Module solved.");
                 StopCoroutine(arrowFlasher);
                 StartCoroutine(victory());
             }
         }
         else
         {
-            QuickLog(string.Format("You pressed {0} which is wrong on position {1}!", debugDirections[idxArrow], curPos + 1));
+            QuickLogFormat("You pressed {0} which is wrong on position {1}!", debugDirections[idxArrow], curPos + 1);
             curPos = 0;
             hasStruck = true;
             modSelf.HandleStrike();
@@ -164,7 +164,7 @@ public class FlashingArrowsScript : BaseArrowsScript {
         StopCoroutine(arrowFlasher);
         StartCoroutine(TypeNumber());
         arrowFlasher = FlashArrows();
-        // Shift the flashing arrows a bit upon a reset
+        // Shift the flashing arrows a bit upon a reset, disabled for the time being for consistency.
         /*
         for (int x = 0; x < idxColorFlashingArrows.Length; x++)
         {
@@ -198,7 +198,7 @@ public class FlashingArrowsScript : BaseArrowsScript {
         }
         // Generate a random 2 digit number.
         displayNumber = uernd.Range(0, 100);
-        QuickLog(string.Format("The displayed number is {0}.", displayNumber));
+        QuickLogFormat("The displayed number is {0}.", displayNumber);
 
         var serNoNumbers = mBombInfo.GetSerialNumberNumbers();
         int modifier = serNoNumbers.Any() ? serNoNumbers.First() : mBombInfo.GetPortPlateCount();
@@ -206,17 +206,17 @@ public class FlashingArrowsScript : BaseArrowsScript {
         int selectedNumber = (displayNumber + modifier) % 5;
         if (selectedNumber == 0) selectedNumber = 1;
 
-        QuickLog(string.Format("The number that should be obtained is {0}.", selectedNumber));
+        QuickLogFormat("The number that should be obtained is {0}.", selectedNumber);
 
         int[] idxArrowSet = { 3, 1, 2, 0 };
 
         idxReferencedArrow = idxArrowSet[selectedNumber - 1];
 
-        QuickLog(string.Format("The arrow to reference is the {0} arrow.", debugDirections[idxReferencedArrow]));
+        QuickLogFormat("The arrow to reference is the {0} arrow.", debugDirections[idxReferencedArrow]);
 
         var arrowSet = idxColorFlashingArrows[idxReferencedArrow];
 
-        QuickLog(string.Format("This arrow is flashing the following colors: [ {0} ]", arrowSet.Select(a => a >= 0 ? debugColors[a] : "Black").Join(", ")));
+        QuickLogFormat("This arrow is flashing the following colors: [ {0} ]", arrowSet.Select(a => a >= 0 ? debugColors[a] : "Black").Join(", "));
 
         var idxBlack = Array.IndexOf(arrowSet, -1);
         var colorAfterBlack = arrowSet[(idxBlack + 1) % 3];
@@ -224,7 +224,7 @@ public class FlashingArrowsScript : BaseArrowsScript {
 
 
         correctPresses = idxPressArray[arrowSet[(idxBlack + 1) % 3]][arrowSet[(idxBlack + 2) % 3]];
-        QuickLog(string.Format("Correct order to press ( {1} row, {2} column ): [ {0} ]", correctPresses.Select(a => debugDirections[a]).Join(", "), debugColors[colorAfterBlack], debugColors[colorBeforeBlack]));
+        QuickLogFormat("Correct order to press ( {1} row, {2} column ): [ {0} ]", correctPresses.Select(a => debugDirections[a]).Join(", "), debugColors[colorAfterBlack], debugColors[colorBeforeBlack]);
 
         arrowFlasher = FlashArrows();
 
@@ -234,6 +234,10 @@ public class FlashingArrowsScript : BaseArrowsScript {
     protected override void QuickLog(string toLog = "")
     {
         Debug.LogFormat("[Flashing Arrows #{0}]: {1}", moduleId, toLog);
+    }
+    protected override void QuickLogFormat(string toLog = "", params object[] args)
+    {
+        Debug.LogFormat("[Flashing Arrows #{0}]: {1}", moduleId, string.Format(toLog,args));
     }
     IEnumerator TypeNumber()
     {
@@ -365,7 +369,7 @@ public class FlashingArrowsScript : BaseArrowsScript {
         }
         else
         {
-            string[] cmdSets = command.Split();
+            string[] cmdSets = command.Trim().Split();
             List<KMSelectable> allPresses = new List<KMSelectable>();
             hasStruck = false;
             for (int x = 0; x < cmdSets.Length; x++)

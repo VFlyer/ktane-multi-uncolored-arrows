@@ -29,6 +29,11 @@ public class BaseArrowsScript : MonoBehaviour {
         Debug.LogFormat("[? Arrows #{0}]: {1}", moduleId, toLog);
     }
 
+    protected virtual void QuickLogFormat(string toLog = "", params object[] misc)
+    {
+        Debug.LogFormat("[? Arrows #{0}]: {1}", moduleId, string.Format(toLog, misc));
+    }
+
     protected virtual IEnumerator victory() // The default victory animation from eXish's Arrows bretherns
     {
         isanimating = true;

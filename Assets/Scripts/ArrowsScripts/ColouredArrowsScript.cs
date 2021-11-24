@@ -88,7 +88,7 @@ public class ColouredArrowsScript : BaseArrowsScript {
                 possibleIdxGoalColors.Add(2, new[] { 2, 3, 0, 1, });
                 possibleIdxGoalColors.Add(3, new[] { 3, 0, 1, 2, });
             }
-            Debug.LogFormat("[Coloured Arrows #{0}]: Rule seed for Coloured Arrows generated instructions with a seed of {1}.", moduleId, randomizer.Seed);
+            Debug.LogFormat("[Coloured Arrows #{0}]: Rule seed for Coloured Arrows generated instructions with a seed of {1}. See filtered log for the rules.", moduleId, randomizer.Seed);
         }
         else
         {
@@ -98,7 +98,7 @@ public class ColouredArrowsScript : BaseArrowsScript {
             possibleIdxGoalColors.Add(2, new[] { 2, 3, 0, 1, });
             possibleIdxGoalColors.Add(3, new[] { 3, 0, 1, 2, });
         }
-        Debug.LogFormat("<Coloured Arrows #{0}>: Rule-Seed Generated Instructions: (Formatted as [Color displayed]: [ Goal Colors for Up, Right, Down, Left respectively ])", moduleId);
+        Debug.LogFormat("<Coloured Arrows #{0}>: Rule-Seed Generated Instructions: (Formatted as [Color displayed]: [ Goal Colors for the arrow pointing Up, Right, Down, Left respectively ])", moduleId);
         foreach (var rsSet in possibleIdxGoalColors)
         {
             Debug.LogFormat("<Coloured Arrows #{0}>: {1}: [ {2} ]", moduleId,
@@ -131,6 +131,10 @@ public class ColouredArrowsScript : BaseArrowsScript {
     {
         Debug.LogFormat("[Coloured Arrows #{0}]: {1}", moduleId, toLog);
     }
+    protected override void QuickLogFormat(string toLog = "", params object[] args)
+    {
+        Debug.LogFormat("[Coloured Arrows #{0}]: {1}", moduleId, string.Format(toLog, args));
+    }
     void Start () {
         HandleRuleSeed();
         GeneratePossibleArrows();
@@ -150,13 +154,13 @@ public class ColouredArrowsScript : BaseArrowsScript {
             streak++;
             if (streak >= 7)
             {
-                QuickLog(string.Format("You pressed {0}, which is correct! Streak is high enough to disarm!", baseDirections[idx]));
+                QuickLogFormat("You pressed {0}, which is correct! Streak is high enough to disarm!", baseDirections[idx]);
                 moduleSolved = true;
                 StartCoroutine(victory());
             }
             else
             {
-                QuickLog(string.Format("You pressed {0}, which is correct! Current Streak: {1}.", baseDirections[idx], streak));
+                QuickLogFormat("You pressed {0}, which is correct! Current Streak: {1}.", baseDirections[idx], streak);
                 GeneratePossibleArrows();
                 StartCoroutine(ToNextArrow());
             }
@@ -164,7 +168,7 @@ public class ColouredArrowsScript : BaseArrowsScript {
         else
         {
             streak = 0;
-            QuickLog(string.Format("You pressed {0}, which is wrong! Streak reset to 0.", baseDirections[idx]));
+            QuickLogFormat("You pressed {0}, which is wrong! Streak reset to 0.", baseDirections[idx]);
             GeneratePossibleArrows();
             StartCoroutine(ToNextArrow());
             modSelf.HandleStrike();
@@ -176,17 +180,11 @@ public class ColouredArrowsScript : BaseArrowsScript {
         idxColorList.Shuffle();
         idxDirectionDisplay = rnd.Range(0, 4);
         idxColorDisplay = rnd.Range(0, 4);
-        QuickLog(string.Format("The display is showing {1} in {0}.",
-            possibleColors[idxColorDisplay],
-            baseDirections[idxDirectionDisplay]
-            ));
+        QuickLogFormat("The display is showing {1} in {0}.", possibleColors[idxColorDisplay], baseDirections[idxDirectionDisplay]);
 
         var goalColor = possibleIdxGoalColors.ContainsKey(idxColorDisplay) ? possibleIdxGoalColors[idxColorDisplay][idxDirectionDisplay] : -1;
         targetButtonIdx = Array.IndexOf(idxColorList, goalColor);
-        QuickLog(string.Format("The target arrow to press is the {0} arrow which is colored {1}.",
-            baseDirections[targetButtonIdx],
-            possibleColors[goalColor]
-            ));
+        QuickLogFormat("The target arrow to press is the {0} arrow which is colored {1}.", baseDirections[targetButtonIdx], possibleColors[goalColor]);
     }
 
     IEnumerator ToNextArrow()

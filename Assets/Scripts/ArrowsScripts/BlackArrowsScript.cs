@@ -144,7 +144,7 @@ public class BlackArrowsScript : BaseArrowsScript {
     {
         if (!readyToSolve)
         {
-            QuickLog(string.Format("Strike! The module is not ready to solve."));
+            QuickLog("Strike! The module is not ready to solve.");
             hasStruck = true;
             modSelf.HandleStrike();
             return;
@@ -164,14 +164,14 @@ public class BlackArrowsScript : BaseArrowsScript {
             textDisplay.text = "";
             if (currentInputPos >= finalDirectionIdxPresses.Count)
             {
-                QuickLog(string.Format("Directions inputted successfully. Module solved."));
+                QuickLog("Directions inputted successfully. Module solved.");
                 moduleSolved = true;
                 StartCoroutine(victory());
             }
         }
         else
         {
-            QuickLog(string.Format("Strike! Direction {1} was incorrectly pressed for stage {0}!", currentInputPos, idxToDirections[directionIdxInput]));
+            QuickLogFormat("Strike! Direction {1} was incorrectly pressed for stage {0}!", currentInputPos, idxToDirections[directionIdxInput]);
             hasStruck = true;
             modSelf.HandleStrike();
             textDisplay.color = Color.red * 0.5f;
@@ -320,7 +320,7 @@ public class BlackArrowsScript : BaseArrowsScript {
     void StartBossModule()
     {
         totalStagesGeneratable = bombInfo.GetSolvableModuleNames().Count(a => !ignoreList.Contains(a));
-        QuickLog(string.Format("Total Extra Stages Generatable: {0}", totalStagesGeneratable));
+        QuickLogFormat("Total Extra Stages Generatable: {0}", totalStagesGeneratable);
         allDirectionIdxs = new List<int>();
         allRepeatCounts = new List<int>();
 
@@ -330,22 +330,22 @@ public class BlackArrowsScript : BaseArrowsScript {
         int colIdx = char.IsDigit(serialNo[5]) ? int.Parse(serialNo[5].ToString()) : serialNo[5] - 'A' + 1;
 
         int modifier = bombInfo.GetSerialNumberLetters().Select(a => a - 'A' + 1).Sum() % 5;
-        QuickLog(string.Format("Starting Position: Row {0}, Col {1}", rowIdx, colIdx));
-        QuickLog(string.Format("Sum of Alphabetical Positions of Serial Number Letters, Modulo 5: {0}", modifier));
+        QuickLogFormat("Starting Position: Row {0}, Col {1}", rowIdx, colIdx);
+        QuickLogFormat("Sum of Alphabetical Positions of Serial Number Letters, Modulo 5: {0}", modifier);
 
         List<int> allFinalValuesVisited = new List<int>();
         // Stage 0's value
         allFinalValuesVisited.Add(digitTable[rowIdx, colIdx]);
-        QuickLog(string.Format("Base Number from Stage 0: {0}", digitTable[rowIdx, colIdx]));
+        QuickLogFormat("Base Number from Stage 0: {0}", digitTable[rowIdx, colIdx]);
 
         for (int x = 0; x < totalStagesGeneratable; x++)
         {
-            QuickLog(string.Format(""));
-            QuickLog(string.Format("Stage {0}:", x + 1));
+            QuickLog("");
+            QuickLogFormat("Stage {0}:", x + 1);
             int curDirectionIdx = uernd.Range(0, 9);
             int repeatCount = curDirectionIdx == 0 ? 1 : uernd.Range(1, 4);
             allRepeatCounts.Add(repeatCount);
-            QuickLog(string.Format("Instruction performed on this stage: {0} {1} time(s)", intToDirections[curDirectionIdx], repeatCount));
+            QuickLogFormat("Instruction performed on this stage: {0} {1} time(s)", intToDirections[curDirectionIdx], repeatCount);
             allDirectionIdxs.Add(curDirectionIdx);
             for (int t = 0; t < repeatCount; t++)
             {
@@ -384,23 +384,23 @@ public class BlackArrowsScript : BaseArrowsScript {
                         break;
                 }
             }
-            QuickLog(string.Format("Position after instruction: Row {0}, Col {1}", rowIdx, colIdx));
+            QuickLogFormat("Position after instruction: Row {0}, Col {1}", rowIdx, colIdx);
             int curVal = digitTable[rowIdx, colIdx];
-            QuickLog(string.Format("Which lands on this number: {0}", curVal));
+            QuickLogFormat("Which lands on this number: {0}", curVal);
             curVal += 1 + x;
             allFinalValuesVisited.Add(curVal);
-            QuickLog(string.Format("After adding \"n\": {0}", curVal));
+            QuickLogFormat("After adding \"n\": {0}", curVal);
             // Logging for invididual stages
             var indivStageVal = curVal + modifier;
-            QuickLog(string.Format("After adding sum of alphabetical positions in serial number, mod 5: {0}", indivStageVal));
+            QuickLogFormat("After adding sum of alphabetical positions in serial number, mod 5: {0}", indivStageVal);
             var indivStageDir = (indivStageVal - 1) % 12 + 1;
-            QuickLog(string.Format("Result after keeping the number within 1 - 12 inclusive: {0} ({1})", indivStageDir, idxToDirections[goalIdxPressesByValue[indivStageDir]]));
-            QuickLog(string.Format(""));
+            QuickLogFormat("Result after keeping the number within 1 - 12 inclusive: {0} ({1})", indivStageDir, idxToDirections[goalIdxPressesByValue[indivStageDir]]);
+            QuickLog("");
         }
         allFinalValuesVisited = allFinalValuesVisited.Select(a => (a + modifier - 1) % 12 + 1).ToList();
-        QuickLog(string.Format("Final Values for all stages (including stage 0, after adding sum of alphabetical positions in serial no. mod 5, kept within 1 - 12 inclusive): {0}", allFinalValuesVisited.Join(", ")));
+        QuickLogFormat("Final Values for all stages (including stage 0, after adding sum of alphabetical positions in serial no. mod 5, kept within 1 - 12 inclusive): {0}", allFinalValuesVisited.Join(", "));
         finalDirectionIdxPresses = allFinalValuesVisited.Select(a => goalIdxPressesByValue[a]).ToList();
-        QuickLog(string.Format("Presses required (From stage 0): {0}", finalDirectionIdxPresses.Select(x => idxToDirections[x]).Join(", ")));
+        QuickLogFormat("Presses required (From stage 0): {0}", finalDirectionIdxPresses.Select(x => idxToDirections[x]).Join(", "));
         hasStarted = true;
         isanimating = false;
     }
@@ -466,7 +466,7 @@ public class BlackArrowsScript : BaseArrowsScript {
                 {
                     readyToSolve = true;
                     textDisplay.text = "";
-                    QuickLog(string.Format("The module is now ready to solve."));
+                    QuickLog("The module is now ready to solve.");
                 }
                 else
                 {
@@ -494,6 +494,10 @@ public class BlackArrowsScript : BaseArrowsScript {
     protected override void QuickLog(string toLog = "")
     {
         Debug.LogFormat("[Black Arrows #{0}]: {1}", moduleId, toLog);
+    }
+    protected override void QuickLogFormat(string toLog = "", params object[] args)
+    {
+        Debug.LogFormat("[Black Arrows #{0}]: {1}", moduleId, string.Format(toLog, args));
     }
 
     private IEnumerator BreatheArrowFlashes(float delay)
@@ -655,7 +659,7 @@ public class BlackArrowsScript : BaseArrowsScript {
         }
         else
         {
-            string[] cmdSets = command.Split();
+            string[] cmdSets = command.Trim().Split();
             List<int> allPresses = new List<int>();
             
             for (int x = 0; x < cmdSets.Length; x++)
