@@ -679,7 +679,40 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
     }
     protected override IEnumerator TwitchHandleForcedSolve()
     {
-        return base.TwitchHandleForcedSolve();
+        QuickLog("Requesting autosolve viva TP.");
+
+        if (!isSubmitting)
+        {
+            switch (colorIdxPressed.Count())
+            {
+                case 0:
+                    while (processing)
+                        yield return true;
+                    screenSelectable.OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                    break;
+                case 1:
+                    arrowButtons.PickRandom().OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                    goto case 2;
+                case 2:
+                    screenSelectable.OnInteract();
+                    goto case 0;
+
+
+            }
+        }
+        colorIdxPressed.Clear();
+        for (var x = 0; x < idxColorsSubmit.Length; x++)
+        {
+            yield return null;
+            arrowButtons[Array.IndexOf(colorIdxes, idxColorsSubmit[x])].OnInteract();
+            yield return new WaitForSeconds(0.1f);
+        }
+        screenSelectable.OnInteract();
+        while (isanimating)
+            yield return true;
+        //return base.TwitchHandleForcedSolve();
     }
 
 #pragma warning disable 414

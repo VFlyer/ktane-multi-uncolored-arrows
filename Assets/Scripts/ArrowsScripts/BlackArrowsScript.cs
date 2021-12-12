@@ -102,7 +102,7 @@ public class BlackArrowsScript : BaseArrowsScript {
     Color firstTextColor;
     List<int> allDirectionIdxs, allRepeatCounts;
     List<int> finalDirectionIdxPresses = new List<int>();
-    BlackArrowsSettings KArrSettings = new BlackArrowsSettings();
+    //BlackArrowsSettings KArrSettings = new BlackArrowsSettings();
     void Awake()
     {
         try
@@ -115,6 +115,7 @@ public class BlackArrowsScript : BaseArrowsScript {
         }
         finally
         {
+            /*
             try
             {
                 ModConfig<BlackArrowsSettings> modConfig = new ModConfig<BlackArrowsSettings>("BlackArrowsSettings");
@@ -126,6 +127,7 @@ public class BlackArrowsScript : BaseArrowsScript {
                 Debug.LogWarningFormat("<Black Arrows Settings> Settings do not work as intended! Using default settings.");
                 KArrSettings = new BlackArrowsSettings();
             }
+            */
         }
     }
 
@@ -216,8 +218,24 @@ public class BlackArrowsScript : BaseArrowsScript {
             yield return new WaitForSeconds(5f);
         }
     }
-
-
+    IEnumerator HandleFullMercy()
+    {
+        yield return null;
+        int lastCorrectInputPos = currentInputPos;
+        while (lastCorrectInputPos == currentInputPos)
+        {
+            for (int x = 0; x < currentInputPos && lastCorrectInputPos == currentInputPos; x++)
+            {
+                textDisplay.color = firstTextColor;
+                StartCoroutine(TypeText((x + 1).ToString("00")));
+                yield return FlashingGivenDirection(allDirectionIdxs[x], allRepeatCounts[x]);
+            }
+            textDisplay.color = Color.red * 0.5f;
+            yield return TypeText(currentInputPos.ToString("00"));
+            yield return new WaitForSeconds(5f);
+        }
+    }
+    /*
     IEnumerator GlowGivenDirection(int directionIdx, int repeatCount = 1)
     {
         yield return new WaitForSeconds(0.5f);
@@ -319,7 +337,7 @@ public class BlackArrowsScript : BaseArrowsScript {
         yield return new WaitForSeconds(1.5f);
         isFlashing = false;
     }
-
+    */
     IEnumerator FlashingGivenDirection(int directionIdx, int repeatCount = 1)
     {
         yield return new WaitForSeconds(0.5f);
@@ -445,11 +463,12 @@ public class BlackArrowsScript : BaseArrowsScript {
 
         int rowIdx = char.IsDigit(serialNo[2]) ? int.Parse(serialNo[2].ToString()) : serialNo[2] - 'A' + 1;
         int colIdx = char.IsDigit(serialNo[5]) ? int.Parse(serialNo[5].ToString()) : serialNo[5] - 'A' + 1;
-        QuickLogFormat("Using {0} from serial number letters.", KArrSettings.easyModeBlackArrows ? "no initial offset" : KArrSettings.extendSerialLetterInitialCalcs ? "mod 12 offset" : "mod 5 offset");
-        QuickLog("This is a test build! Do report issues with this.");
-        int modifier = bombInfo.GetSerialNumberLetters().Select(a => a - 'A' + 1).Sum() % (KArrSettings.easyModeBlackArrows ? 1 : KArrSettings.extendSerialLetterInitialCalcs ? 12 : 5);
+        //QuickLogFormat("Using {0} from serial number letters.", KArrSettings.easyModeBlackArrows ? "no initial offset" : KArrSettings.extendSerialLetterInitialCalcs ? "mod 12 offset" : "mod 5 offset");
+        //QuickLog("This is a test build! Do report issues with this.");
+        int modifier = bombInfo.GetSerialNumberLetters().Select(a => a - 'A' + 1).Sum() % 12; //(KArrSettings.easyModeBlackArrows ? 1 : KArrSettings.extendSerialLetterInitialCalcs ? 12 : 5);
         QuickLogFormat("Starting Position: Row {0}, Col {1}", rowIdx, colIdx);
-        QuickLogFormat("Sum of Alphabetical Positions of Serial Number Letters, Modulo {1}: {0}", modifier, KArrSettings.easyModeBlackArrows ? 1 : KArrSettings.extendSerialLetterInitialCalcs ? 12 : 5);
+        QuickLogFormat("Sum of Alphabetical Positions of Serial Number Letters, Modulo {1}: {0}", modifier,
+            12); //KArrSettings.easyModeBlackArrows ? 1 : KArrSettings.extendSerialLetterInitialCalcs ? 12 : 5);
 
         List<int> allFinalValuesVisited = new List<int>();
         // Stage 0's value
@@ -463,7 +482,7 @@ public class BlackArrowsScript : BaseArrowsScript {
             int curDirectionIdx = uernd.Range(0, 9);
             int repeatCount = curDirectionIdx == 0 ? 1 : uernd.Range(1, 4);
             allRepeatCounts.Add(repeatCount);
-            QuickLogFormat("Instruction performed on this stage: {0} {1} time(s)", intToDirections[curDirectionIdx], repeatCount);
+            QuickLogFormat("Instruction performed on this stage: {0} {1} time{2}", intToDirections[curDirectionIdx], repeatCount, repeatCount == 1 ? "" : "s");
             allDirectionIdxs.Add(curDirectionIdx);
             for (int t = 0; t < repeatCount; t++)
             {
@@ -615,7 +634,7 @@ public class BlackArrowsScript : BaseArrowsScript {
     }
     protected override void QuickLogFormat(string toLog = "", params object[] args)
     {
-        Debug.LogFormat("[Black Arrows #{0}]: {1}", moduleId, string.Format(toLog, args));
+        QuickLog(string.Format(toLog, args));
     }
 
     private IEnumerator BreatheArrowFlashes(float delay)
@@ -708,12 +727,13 @@ public class BlackArrowsScript : BaseArrowsScript {
         }
         */
     }
+    /*
     public class BlackArrowsSettings
     {
         public bool easyModeBlackArrows = false;
         public bool extendSerialLetterInitialCalcs = true;
     }
-
+    */
 #pragma warning disable 414
     private readonly string TwitchHelpMessage = "Press the specified arrow button with \"!{0} up/right/down/left\" Words can be substituted as one letter (Ex. right as r). "+
         "Multiple directions can be issued in one command by spacing them out or as a 1 word when abbrevivabted, I.E. \"!{0} udlrrrll\". Alternatively, when abbreviated, you may space out the presses in the command. I.E. \"!{0} lluur ddlr urd\" Toggle colorblind mode with \"!{0} colorblind\"";
@@ -840,7 +860,8 @@ public class BlackArrowsScript : BaseArrowsScript {
 
     protected override IEnumerator TwitchHandleForcedSolve()
     {
-        readyToSolve = true; // Enforce the module to be ready to solve, to bypass inputting before the module is ready to solve.
+        // Enforce the module to be ready to solve, to bypass inputting before the module is ready to solve.
+        readyToSolve = true; 
         currentStageNum = totalStagesGeneratable;
         if (currentFlashingDirection != null)
             StopCoroutine(currentFlashingDirection);
