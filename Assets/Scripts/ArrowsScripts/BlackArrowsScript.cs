@@ -102,6 +102,7 @@ public class BlackArrowsScript : BaseArrowsScript {
     Color firstTextColor;
     List<int> allDirectionIdxs, allRepeatCounts;
     List<int> finalDirectionIdxPresses = new List<int>();
+    BlackArrowsSettings KArrSettings = new BlackArrowsSettings();
     void Awake()
     {
         try
@@ -111,6 +112,20 @@ public class BlackArrowsScript : BaseArrowsScript {
         catch
         {
             colorblindActive = false;
+        }
+        finally
+        {
+            try
+            {
+                ModConfig<BlackArrowsSettings> modConfig = new ModConfig<BlackArrowsSettings>("BlackArrowsSettings");
+                KArrSettings = modConfig.Settings;
+                modConfig.Settings = KArrSettings;
+            }
+            catch
+            {
+                Debug.LogWarningFormat("<Black Arrows Settings> Settings do not work as intended! Using default settings.");
+                KArrSettings = new BlackArrowsSettings();
+            }
         }
     }
 
@@ -202,6 +217,108 @@ public class BlackArrowsScript : BaseArrowsScript {
         }
     }
 
+
+    IEnumerator GlowGivenDirection(int directionIdx, int repeatCount = 1)
+    {
+        yield return new WaitForSeconds(0.5f);
+        for (int x = 0; x < repeatCount; x++)
+        {
+            switch (directionIdx)
+            {
+                case 0: // Flash all arrows once per cycle.
+                    {
+                        arrowRenderers[0].material = setMats[1];
+                        arrowRenderers[1].material = setMats[1];
+                        arrowRenderers[2].material = setMats[1];
+                        arrowRenderers[3].material = setMats[1];
+                        yield return new WaitForSeconds(0.5f);
+                        arrowRenderers[0].material = setMats[0];
+                        arrowRenderers[1].material = setMats[0];
+                        arrowRenderers[2].material = setMats[0];
+                        arrowRenderers[3].material = setMats[0];
+                        yield return new WaitForSeconds(0.5f);
+                        break;
+                    }
+                case 1: // Flash the Up arrow once per cycle.
+                    {
+                        arrowRenderers[0].material = setMats[1];
+                        yield return new WaitForSeconds(0.5f);
+                        arrowRenderers[0].material = setMats[0];
+                        yield return new WaitForSeconds(0.5f);
+                        break;
+                    }
+                case 2: // Flash the Up and Right arrows once per cycle.
+                    {
+                        arrowRenderers[0].material = setMats[1];
+                        arrowRenderers[1].material = setMats[1];
+                        yield return new WaitForSeconds(0.5f);
+                        arrowRenderers[0].material = setMats[0];
+                        arrowRenderers[1].material = setMats[0];
+                        yield return new WaitForSeconds(0.5f);
+                        break;
+                    }
+                case 3: // Flash the Right arrow once per cycle.
+                    {
+                        arrowRenderers[1].material = setMats[1];
+                        yield return new WaitForSeconds(0.5f);
+                        arrowRenderers[1].material = setMats[0];
+                        yield return new WaitForSeconds(0.5f);
+                        break;
+                    }
+                case 4: // Flash the Down and Right arrows once per cycle.
+                    {
+                        arrowRenderers[1].material = setMats[1];
+                        arrowRenderers[2].material = setMats[1];
+                        yield return new WaitForSeconds(0.5f);
+                        arrowRenderers[1].material = setMats[0];
+                        arrowRenderers[2].material = setMats[0];
+                        yield return new WaitForSeconds(0.5f);
+                        break;
+                    }
+                case 5: // Flash the Down arrow once per cycle.
+                    {
+                        arrowRenderers[2].material = setMats[1];
+                        yield return new WaitForSeconds(0.5f);
+                        arrowRenderers[2].material = setMats[0];
+                        yield return new WaitForSeconds(0.5f);
+                        break;
+                    }
+                case 6: // Flash the Down and Left arrows once per cycle.
+                    {
+                        arrowRenderers[2].material = setMats[1];
+                        arrowRenderers[3].material = setMats[1];
+                        yield return new WaitForSeconds(0.5f);
+                        arrowRenderers[2].material = setMats[0];
+                        arrowRenderers[3].material = setMats[0];
+                        yield return new WaitForSeconds(0.5f);
+                        break;
+                    }
+                case 7: // Flash the Left arrow once per cycle.
+                    {
+                        arrowRenderers[3].material = setMats[1];
+                        yield return new WaitForSeconds(0.5f);
+                        arrowRenderers[3].material = setMats[0];
+                        yield return new WaitForSeconds(0.5f);
+                        break;
+                    }
+                case 8: // Flash the Down and Left arrows once per cycle.
+                    {
+                        arrowRenderers[0].material = setMats[1];
+                        arrowRenderers[3].material = setMats[1];
+                        yield return new WaitForSeconds(0.5f);
+                        arrowRenderers[0].material = setMats[0];
+                        arrowRenderers[3].material = setMats[0];
+                        yield return new WaitForSeconds(0.5f);
+                        break;
+                    }
+                default:
+                    yield return null;
+                    break;
+            }
+        }
+        yield return new WaitForSeconds(1.5f);
+        isFlashing = false;
+    }
 
     IEnumerator FlashingGivenDirection(int directionIdx, int repeatCount = 1)
     {
@@ -328,10 +445,11 @@ public class BlackArrowsScript : BaseArrowsScript {
 
         int rowIdx = char.IsDigit(serialNo[2]) ? int.Parse(serialNo[2].ToString()) : serialNo[2] - 'A' + 1;
         int colIdx = char.IsDigit(serialNo[5]) ? int.Parse(serialNo[5].ToString()) : serialNo[5] - 'A' + 1;
-
-        int modifier = bombInfo.GetSerialNumberLetters().Select(a => a - 'A' + 1).Sum() % 5;
+        QuickLogFormat("Using {0} from serial number letters.", KArrSettings.easyModeBlackArrows ? "no initial offset" : KArrSettings.extendSerialLetterInitialCalcs ? "mod 12 offset" : "mod 5 offset");
+        QuickLog("This is a test build! Do report issues with this.");
+        int modifier = bombInfo.GetSerialNumberLetters().Select(a => a - 'A' + 1).Sum() % (KArrSettings.easyModeBlackArrows ? 1 : KArrSettings.extendSerialLetterInitialCalcs ? 12 : 5);
         QuickLogFormat("Starting Position: Row {0}, Col {1}", rowIdx, colIdx);
-        QuickLogFormat("Sum of Alphabetical Positions of Serial Number Letters, Modulo 5: {0}", modifier);
+        QuickLogFormat("Sum of Alphabetical Positions of Serial Number Letters, Modulo {1}: {0}", modifier, KArrSettings.easyModeBlackArrows ? 1 : KArrSettings.extendSerialLetterInitialCalcs ? 12 : 5);
 
         List<int> allFinalValuesVisited = new List<int>();
         // Stage 0's value
@@ -590,6 +708,12 @@ public class BlackArrowsScript : BaseArrowsScript {
         }
         */
     }
+    public class BlackArrowsSettings
+    {
+        public bool easyModeBlackArrows = false;
+        public bool extendSerialLetterInitialCalcs = true;
+    }
+
 #pragma warning disable 414
     private readonly string TwitchHelpMessage = "Press the specified arrow button with \"!{0} up/right/down/left\" Words can be substituted as one letter (Ex. right as r). "+
         "Multiple directions can be issued in one command by spacing them out or as a 1 word when abbrevivabted, I.E. \"!{0} udlrrrll\". Alternatively, when abbreviated, you may space out the presses in the command. I.E. \"!{0} lluur ddlr urd\" Toggle colorblind mode with \"!{0} colorblind\"";

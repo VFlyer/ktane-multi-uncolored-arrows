@@ -40,6 +40,8 @@ MonoBehaviour:
 
     Gray Arrows: grayArrowsModule
 
+    Deceptive Rainbow Arrows: deceptiveRainbowArrowsModule
+
 
     Original Arrows prefab by eXish, modified by VFlyer for multi-purpose usage
 
@@ -50,6 +52,6 @@ MonoBehaviour:
 
 
     Source Code: https://github.com/VFlyer/ktane-multi-uncolored-arrows'
-  version: 1.4
+  version: 1.5
   outputFolder: build
   previewImage: {fileID: 2800000, guid: 7e77cc94159c66f418cf0ee83896bc68, type: 3}
