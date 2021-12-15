@@ -139,7 +139,7 @@ public class FlashingArrowsScript : BaseArrowsScript {
         }
         if (correctPresses[curPos] == idxArrow)
         {
-            QuickLogFormat("You pressed {0} which is correct on position {1}!", debugDirections[idxArrow], curPos + 1);
+            QuickLogFormat("You pressed {0} which is correct on input position {1}!", debugDirections[idxArrow], curPos + 1);
             curPos++;
             if (curPos >= 4)
             {
@@ -151,7 +151,7 @@ public class FlashingArrowsScript : BaseArrowsScript {
         }
         else
         {
-            QuickLogFormat("You pressed {0} which is wrong on position {1}!", debugDirections[idxArrow], curPos + 1);
+            QuickLogFormat("You pressed {0} which is wrong on input position {1}!", debugDirections[idxArrow], curPos + 1);
             curPos = 0;
             hasStruck = true;
             modSelf.HandleStrike();

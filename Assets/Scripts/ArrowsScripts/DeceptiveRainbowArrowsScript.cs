@@ -61,7 +61,7 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
     int[] colorIdxes, idxColorsSubmit, responseValues;
     private static int moduleIdCounter = 1;
     int displayedValue = 0, textColorIdx = 0;
-    bool isSubmitting = false, processing = false;
+    bool isSubmitting = false, processing = false, hasStruck = false;
 
     List<int> flashingColorIdxes, colorIdxPressed, selectedResponseValues;
     List<bool> flashingInverted;
@@ -132,6 +132,7 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
         textDisplay.text = colorIdxPressed.Select(a => "ROYGBPWK"[a]).Join("");
         if (colorIdxPressed.Count > 2 || processing)
         {
+            hasStruck = true;
             modSelf.HandleStrike();
             OverrideCoroutine(Error());
             if (processing)
@@ -164,6 +165,7 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
         {
             if (processing)
             {
+                hasStruck = true;
                 modSelf.HandleStrike();
                 OverrideCoroutine(Error());
                 QuickLog("Oops! Should have waited until it was in its initial phase again.");
@@ -611,6 +613,7 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
         else
         {
             QuickLogFormat("Submitted incorrect sequence of colors: {0}", colorIdxPressed.Select(a => debugColors[a]).Join(", "));
+            hasStruck = true;
             modSelf.HandleStrike();
             StartCoroutine(UngrayOutArrows());
             for (var x = 0; x < 5; x++)
@@ -649,6 +652,7 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
         if (colorIdxPressed.Count != 2)
         {
             QuickLog("Oops! Should have queried 2 colors. Queried with 1 color instead.");
+            hasStruck = true;
             modSelf.HandleStrike();
             yield return Error();
             yield break;
@@ -781,7 +785,8 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
                     yield break;
                 }
             }
-            for (var x = 0; x < allPresses.Count; x++)
+            hasStruck = false;
+            for (var x = 0; x < allPresses.Count && !hasStruck; x++)
             {
                 yield return null;
                 allPresses[x].OnInteract();
