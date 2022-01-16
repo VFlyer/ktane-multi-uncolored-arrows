@@ -51,7 +51,7 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
     byte[] trueOctValues,
         twoBitsTable = {
         30, 2, 56, 60, 47, 26, 20, 18,
-        32, 24, 6, 15, 54, 28, 41, 39,
+        32, 24, 6, 15, 52, 28, 41, 39,
         51, 43, 37, 44, 8, 49, 48, 33,
         55, 7, 0, 34, 4, 46, 38, 53,
         14, 50, 63, 22, 25, 10, 54, 21,
@@ -720,7 +720,7 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
     }
 
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = "Press the specified arrow button with \"!{0} up/right/down/left\" by cardinal (N, NE, E, ...) or by direction (upright, upleft, ...).  Words can be substituted as an abbreviated form (Ex. right as r). Press the display with \"!{0} display/screen/scn\". " +
+    private readonly string TwitchHelpMessage = "Press the specified arrow button with \"!{0} up/right/down/left\" by cardinal (N, NE, E, ...) or by direction (upright, upleft, ...).  Words can be substituted as an abbreviated form (Ex. right as r). Press the display with \"!{0} display/screen/scn/dis\". " +
             "Multiple directions + buttons can be issued in one command by spacing them out. Toggle colorblind mode with \"!{0} colorblind\"";
 #pragma warning restore 414
     protected override IEnumerator ProcessTwitchCommand(string command)
@@ -775,7 +775,7 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
                 {
                     allPresses.Add(arrowButtons[7]);
                 }
-                else if (Regex.IsMatch(cmdSets[x], @"^\s*(screen|display|scn)\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+                else if (Regex.IsMatch(cmdSets[x], @"^\s*(screen|display|scn|dis)\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
                 {
                     allPresses.Add(screenSelectable);
                 }
