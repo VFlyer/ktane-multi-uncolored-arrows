@@ -60,7 +60,7 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
         61, 58, 3, 17, 16, 11, 57, 1 };
     int[] colorIdxes, idxColorsSubmit, responseValues;
     private static int moduleIdCounter = 1;
-    int displayedValue = 0, textColorIdx = 0;
+    int displayedValue = 0, textColorIdx = 0, decoyTextColorIdx;
     bool isSubmitting = false, processing = false, hasStruck = false;
 
     List<int> flashingColorIdxes, colorIdxPressed, selectedResponseValues;
@@ -151,7 +151,7 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
             arrowRenders[x].material = flashingMats[0];
             arrowRenders[x].material.color = idxConnectedColors[colorIdxes[x]];
         }
-        textDisplay.color = Color.white;
+        textDisplay.color = idxConnectedColors[decoyTextColorIdx];
         textDisplay.text = "";
         colorblindDisplayTextMesh.text = "";
         currentFlasher = handler;
@@ -179,7 +179,7 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
             if (!isSubmitting)
             {
                 OverrideCoroutine(FlashCombinationSets());
-                StartCoroutine(TypeText(Enumerable.Range(0, 2).Reverse().Select(a => "01234567"[(int)(displayedValue / Mathf.Pow(8, a) % 8)]).Join("")));
+                StartCoroutine(TypeText(Enumerable.Range(0, 2).Reverse().Select(a => "01234567"[displayedValue / (1 << (3 * a)) % 8]).Join("")));
             }
             else
                 OverrideCoroutine();
@@ -213,10 +213,12 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
             flashingInverted.Add(rnd.value < 0.5f);
         }
         textColorIdx = rnd.Range(0, 6);
+        decoyTextColorIdx = Enumerable.Range(0, 7).Where(a => a != textColorIdx).PickRandom();
         QuickLog(string.Format("Colors around the module (Starting at North and going clockwise): {0}", colorIdxes.Select(a => debugColors[a]).Join(", ")));
         QuickLog(string.Format("Flashing Arrow Combinations: [{0}]",
             Enumerable.Range(0, Mathf.Min(flashingColorIdxes.Count, flashingInverted.Count)).Select(a => (flashingInverted[a] ? "Inverted " : "Normal ") + debugColors[flashingColorIdxes[a]]).Join("] , [")));
-        QuickLog(string.Format("The text is flashing this color: {0}", debugColors[textColorIdx]));
+        QuickLog(string.Format("The text is flashing this color every time the arrow sequence ends: {0}", debugColors[textColorIdx]));
+        QuickLog(string.Format("The text is initially this color: {0}", debugColors[decoyTextColorIdx]));
         StartCoroutine(TypeText(ToOctal(displayedValue, 2)));
         QuickLog("All possible queries:");
         for (var x = 0; x < responseValues.Length; x++)
@@ -226,6 +228,7 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
         QuickLog();
         currentFlasher = FlashCombinationSets();
         StartCoroutine(currentFlasher);
+        textDisplay.color = idxConnectedColors[decoyTextColorIdx];
         CalculateQueries();
     }
     void CalculateQueries()
@@ -241,12 +244,12 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
         QuickLogFormat("These colors are represented by their octal values: [{0}]", Enumerable.Range(0, 8).Select(a => debugColors[a] + ": " + trueOctValues[a].ToString()).Join("], ["));
         var curQuery = 0;
         // First Query
-        if (bombInfo.GetPortPlates().Any(a => a.Length == 0))
+        if (bombInfo.GetBatteryCount() % 2 == 0)
         {
             curQuery = oct8Values.Last() + oct8Values.ElementAt(1) * 8;
             //Debug.Log(Array.IndexOf(trueOctValues, (byte)oct8Values.ElementAt(1)));
             //Debug.Log(Array.IndexOf(trueOctValues, (byte)oct8Values.Last()));
-            QuickLogFormat("Expected color combination for first query: {1}, {0} (Empty port plate is present)",
+            QuickLogFormat("Expected color combination for first query: {1}, {0} (Even amount of batteries)",
                 debugColors[Array.IndexOf(trueOctValues, (byte)oct8Values.Last())],
                 debugColors[Array.IndexOf(trueOctValues, (byte)oct8Values.ElementAt(1))]);
         }
@@ -255,7 +258,7 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
             curQuery = oct8Values.Last() * 8 + oct8Values.ElementAt(1);
             //Debug.Log(Array.IndexOf(trueOctValues, (byte)oct8Values.ElementAt(1)));
             //Debug.Log(Array.IndexOf(trueOctValues, (byte)oct8Values.Last()));
-            QuickLogFormat("Expected color combination for first query: {0}, {1} (No empty port plate)",
+            QuickLogFormat("Expected color combination for first query: {0}, {1} (Odd amount of batteries)",
                 debugColors[Array.IndexOf(trueOctValues, (byte)oct8Values.Last())],
                 debugColors[Array.IndexOf(trueOctValues, (byte)oct8Values.ElementAt(1))]);
         }
@@ -407,7 +410,7 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
                     finalCalculatedValue = selectedResponseValues[2] - finalCalculatedValue - ((1 << i) - 1);
                     break;
                 case 3: // Green
-                    QuickLogFormat("Using equation \"G(x) + x = 2(x + \u2211A / 6)\", solving for {0}.", flashingInverted[oneIdx] ? "x" : "G(x)");
+                    QuickLogFormat("Using equation \"G(x) + x = 2 * x + \u2211A / 3\", solving for {0}.", flashingInverted[oneIdx] ? "x" : "G(x)");
                     finalCalculatedValue += (flashingInverted[oneIdx] ? -1 : 1) * sumResponses / 3;
                     break;
                 case 4: // Blue
@@ -441,10 +444,14 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
             colorblindTextMeshes[x].color = colorblindActive && !(curColorIdx == 7 || curColorIdx == 2) ? Color.white : Color.black;
         }
         colorblindArrowDisplay.gameObject.SetActive(colorblindActive);
+        if (isSubmitting)
+            colorblindDisplayTextMesh.text = colorblindActive && colorIdxPressed.Any() ? debugColors[textColorIdx].Substring(0, 1) : "";
+
     }
     IEnumerator TypeText(string value)
     {
         textDisplay.text = "";
+        colorblindDisplayTextMesh.text = colorblindActive ? debugColors[decoyTextColorIdx].Substring(0, 1) : "";
         for (int x = 1; x < value.Length + 1; x++)
         {
             yield return new WaitForSeconds(0.1f);
@@ -455,6 +462,7 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
     }
     IEnumerator FlashCombinationSets()
     {
+        colorblindDisplayTextMesh.text = colorblindActive ? debugColors[decoyTextColorIdx].Substring(0, 1) : "";
         while (!isSubmitting)
         {
             for (var y = 0; y < Mathf.Min(flashingColorIdxes.Count, flashingInverted.Count) && !isSubmitting; y++)
@@ -469,20 +477,21 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
                     arrowRenders[x].material = canFlash ? flashingMats[1] : flashingMats[0];
                     arrowRenders[x].material.color = canFlash ? ((idxConnectedColors[colorIdxes[x]] * 0.5f) + Color.gray) : idxConnectedColors[colorIdxes[x]];
                 }
+                colorblindDisplayTextMesh.text = colorblindActive ? debugColors[decoyTextColorIdx].Substring(0, 1) : "";
                 yield return new WaitForSeconds(0.25f);
                 for (var x = 0; x < arrowRenders.Length; x++)
                 {
                     arrowRenders[x].material = flashingMats[0];
                     arrowRenders[x].material.color = idxConnectedColors[colorIdxes[x]];
                 }
+                colorblindDisplayTextMesh.text = colorblindActive ? debugColors[decoyTextColorIdx].Substring(0, 1) : "";
                 yield return new WaitForSeconds(0.25f);
             }
             textDisplay.color = idxConnectedColors[textColorIdx];
-            if (colorblindActive)
-                colorblindDisplayTextMesh.text = debugColors[textColorIdx].Substring(0, 1);
+            colorblindDisplayTextMesh.text = colorblindActive ? debugColors[textColorIdx].Substring(0, 1) : "";
             yield return new WaitForSeconds(0.25f);
-            textDisplay.color = Color.white;
-            colorblindDisplayTextMesh.text = "";
+            textDisplay.color = idxConnectedColors[decoyTextColorIdx];
+            colorblindDisplayTextMesh.text = colorblindActive ? debugColors[decoyTextColorIdx].Substring(0, 1) : "";
             yield return new WaitForSeconds(0.25f);
         }
     }
@@ -555,12 +564,38 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
             arrowRenders[curIdxScanCCW].material.color = idxConnectedColors[colorIdxes[curIdxScanCCW]];
         }
     }
-
+    IEnumerator ColorizeText()
+    {
+        for (var x = 0; x < 7; x++)
+        {
+            var lastTextColor = textDisplay.color;
+            var nextTextColor = idxConnectedColors[x];
+            for (float t = 0; t < 1f; t += Time.deltaTime * 2f)
+            {
+                yield return null;
+                textDisplay.color = nextTextColor * t + lastTextColor * (1f - t);
+            }
+            textDisplay.color = nextTextColor;
+        }
+        while (!hasStruck && isanimating)
+        {
+            yield return null;
+        }
+        if (moduleSolved) yield break;
+        for (float t = 0; t < 1f; t += Time.deltaTime * 2f)
+        {
+            yield return null;
+            textDisplay.color = idxConnectedColors[decoyTextColorIdx] * t + Color.white * (1f - t);
+        }
+        textDisplay.color = idxConnectedColors[decoyTextColorIdx];
+        yield break;
+    }
     protected IEnumerator DelaySubmit()
     {
         isanimating = true;
         MAudio.PlaySoundAtTransform("Two_Bits_processing", transform);
         StartCoroutine(GrayOutArrows());
+        StartCoroutine(ColorizeText());
         var rand1 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToArray().Shuffle().Join("");
         for (int i = 0; i < 100; i++)
         {
@@ -589,25 +624,16 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
                 yield return null;
                 arrowsCenter.localRotation = Quaternion.Lerp(curAngle, resultingRotationRequested, x);
             }
-            arrowsCenter.localRotation = resultingRotationRequested;
-            /*
-            var excludingBlack = Enumerable.Range(0, 8).Where(a => colorIdxes[a] != 7);
-            var nonBlackMats = excludingBlack.Select(a => arrowRenders[a].material.color);
-            for (float x = 0; x < 1f; x += Time.deltaTime / 8)
+            arrowsCenter.localRotation = curAngle;
+            for (var x = 0; x < 5; x++)
             {
-                yield return null;
-                for (int idx = 0; idx < excludingBlack.Count(); idx++)
-                {
-                    var curIdx = excludingBlack.ElementAt(idx);
-                    arrowRenders[curIdx].material.color = nonBlackMats.ElementAt(idx) * (1f - x);
-                }
+                var expectedColor = Color.white * (4 - x) / 4f;
+
+                var curIdxScanCW = x * 1 % 8;
+                var curIdxScanCCW = x * 7 % 8;
+                arrowRenders[curIdxScanCW].material.color = expectedColor;
+                arrowRenders[curIdxScanCCW].material.color = expectedColor;
             }
-            for (int idx = 0; idx < excludingBlack.Count(); idx++)
-            {
-                var curIdx = excludingBlack.ElementAt(idx);
-                arrowRenders[curIdx].material.color = Color.black;
-            }
-            */
             isanimating = false;
         }
         else

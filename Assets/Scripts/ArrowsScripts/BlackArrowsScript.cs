@@ -529,7 +529,7 @@ public class BlackArrowsScript : BaseArrowsScript {
             QuickLogFormat("After adding \"n\": {0}", curVal);
             // Logging for invididual stages
             var indivStageVal = curVal + modifier;
-            QuickLogFormat("After adding sum of alphabetical positions in serial number, mod 5: {0}", indivStageVal);
+            QuickLogFormat("After adding sum of alphabetical positions in serial number, mod 12: {0}", indivStageVal);
             var indivStageDir = (indivStageVal - 1) % 12 + 1;
             QuickLogFormat("Result after keeping the number within 1 - 12 inclusive: {0} ({1})", indivStageDir, idxToDirections[goalIdxPressesByValue[indivStageDir]]);
             QuickLog("");
