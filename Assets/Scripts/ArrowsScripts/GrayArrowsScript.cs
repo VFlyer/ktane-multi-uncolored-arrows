@@ -55,7 +55,7 @@ public class GrayArrowsScript : MonoBehaviour {
         textDisplay.text = "";
 
         needySelf.OnNeedyActivation += delegate {
-            needySelf.SetResetDelayTime(20, 80);
+            //needySelf.SetResetDelayTime(20, 80);
             if (forceDisable)
                 needySelf.HandlePass();
             else
@@ -281,7 +281,9 @@ public class GrayArrowsScript : MonoBehaviour {
     {
         yield return null;
         textDisplay.text = "";
-        needySelf.SetResetDelayTime(float.MaxValue, float.MaxValue); // Modify reactivation time to forcably disable the module.
+        needySelf.ResetDelayMax = float.MaxValue;
+        needySelf.ResetDelayMin = float.MaxValue;
+        //needySelf.SetResetDelayTime(float.MaxValue, float.MaxValue); // Modify reactivation time to forcably disable the module.
         needySelf.HandlePass();
         isActive = false;
         forceDisable = true;

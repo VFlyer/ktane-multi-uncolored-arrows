@@ -96,7 +96,7 @@ public class BlackArrowsScript : BaseArrowsScript {
     };
 
     private static int moduleIdCounter = 1;
-    bool readyToSolve = false, hasStarted = false, hasStruck, isFlashing = false;
+    bool readyToSolve = false, hasStarted = false, hasStruck, isFlashing = false, requestForceSolve;
     int currentStageNum = -1, totalStagesGeneratable, currentInputPos;
     IEnumerator currentFlashingDirection;
     Color firstTextColor;
@@ -567,7 +567,7 @@ public class BlackArrowsScript : BaseArrowsScript {
         {
             if (colorblindActive)
             {
-                breatheDelay -= Time.deltaTime;
+                breatheDelay -= (requestForceSolve ? 10 : 1) * Time.deltaTime;
                 if (breatheDelay < 0) breatheDelay = 6f;
                 textDisplay.color = Color.white * (0.5f - Mathf.Abs((breatheDelay / 6f) - 0.5f)) * 2 + firstTextColor * Mathf.Abs((breatheDelay / 6f) - 0.5f) * 2;
                 for (int x = 0; x < timerDisplayer.Length; x++)
@@ -861,6 +861,7 @@ public class BlackArrowsScript : BaseArrowsScript {
     protected override IEnumerator TwitchHandleForcedSolve()
     {
         // Enforce the module to be ready to solve, to bypass inputting before the module is ready to solve.
+        /*
         readyToSolve = true; 
         currentStageNum = totalStagesGeneratable;
         if (currentFlashingDirection != null)
@@ -870,7 +871,11 @@ public class BlackArrowsScript : BaseArrowsScript {
         arrowRenderers[1].material = setMats[0];
         arrowRenderers[2].material = setMats[0];
         arrowRenderers[3].material = setMats[0];
-        
+        */
+        requestForceSolve = true;
+        while (!readyToSolve)
+            yield return true;
+
         for (int x = currentInputPos; x < finalDirectionIdxPresses.Count; x++)
         {
             yield return null;

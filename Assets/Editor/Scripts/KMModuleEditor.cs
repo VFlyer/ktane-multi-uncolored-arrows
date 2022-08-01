@@ -46,6 +46,8 @@ public class KMNeedyModuleEditor : Editor
 
             EditorGUILayout.PropertyField(serializedObject.FindProperty("RequiresTimerVisibility"));
             EditorGUILayout.PropertyField(serializedObject.FindProperty("WarnAtFiveSeconds"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("ResetDelayMin"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("ResetDelayMax"));
 
             serializedObject.ApplyModifiedProperties();
         }
