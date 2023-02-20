@@ -102,7 +102,7 @@ public class BlackArrowsScript : BaseArrowsScript {
     Color firstTextColor;
     List<int> allDirectionIdxs, allRepeatCounts;
     List<int> finalDirectionIdxPresses = new List<int>();
-    //BlackArrowsSettings KArrSettings = new BlackArrowsSettings();
+    BlackArrowsSettings KArrSettings = new BlackArrowsSettings();
     void Awake()
     {
         try
@@ -115,7 +115,7 @@ public class BlackArrowsScript : BaseArrowsScript {
         }
         finally
         {
-            /*
+            
             try
             {
                 ModConfig<BlackArrowsSettings> modConfig = new ModConfig<BlackArrowsSettings>("BlackArrowsSettings");
@@ -127,7 +127,7 @@ public class BlackArrowsScript : BaseArrowsScript {
                 Debug.LogWarningFormat("<Black Arrows Settings> Settings do not work as intended! Using default settings.");
                 KArrSettings = new BlackArrowsSettings();
             }
-            */
+            
         }
     }
 
@@ -535,7 +535,7 @@ public class BlackArrowsScript : BaseArrowsScript {
             QuickLog("");
         }
         allFinalValuesVisited = allFinalValuesVisited.Select(a => (a + modifier - 1) % 12 + 1).ToList();
-        QuickLogFormat("Final Values for all stages (including stage 0, after adding sum of alphabetical positions in serial no. mod 5, kept within 1 - 12 inclusive): {0}", allFinalValuesVisited.Join(", "));
+        QuickLogFormat("Final Values for all stages (including stage 0, after adding sum of alphabetical positions in serial no. mod 12, kept within 1 - 12 inclusive): {0}", allFinalValuesVisited.Join(", "));
         finalDirectionIdxPresses = allFinalValuesVisited.Select(a => goalIdxPressesByValue[a]).ToList();
         QuickLogFormat("Presses required (From stage 0): {0}", finalDirectionIdxPresses.Select(x => idxToDirections[x]).Join(", "));
         hasStarted = true;
@@ -727,13 +727,12 @@ public class BlackArrowsScript : BaseArrowsScript {
         }
         */
     }
-    /*
+    
     public class BlackArrowsSettings
     {
-        public bool easyModeBlackArrows = false;
-        public bool extendSerialLetterInitialCalcs = true;
+        public bool nonBossModeBlackArrows = false;
     }
-    */
+    
 #pragma warning disable 414
     private readonly string TwitchHelpMessage = "Press the specified arrow button with \"!{0} up/right/down/left\" Words can be substituted as one letter (Ex. right as r). "+
         "Multiple directions can be issued in one command by spacing them out or as a 1 word when abbrevivabted, I.E. \"!{0} udlrrrll\". Alternatively, when abbreviated, you may space out the presses in the command. I.E. \"!{0} lluur ddlr urd\" Toggle colorblind mode with \"!{0} colorblind\"";
