@@ -360,7 +360,7 @@ public class FlashingArrowsScript : BaseArrowsScript {
                 {
                     yield return null;
                     if (allPresses[x] != correctPresses[curPos] && allPresses.Count > 1)
-                        yield return string.Format("strikemessage by incorrectly pressing {0} after {1} press(es) in the TP command!", debugDirections[allPresses[x]], x + 1);
+                        yield return string.Format("strikemessage incorrectly pressing {0} after {1} press(es) in the TP command!", debugDirections[allPresses[x]], x + 1);
                     arrowButtons[allPresses[x]].OnInteract();
                     yield return new WaitForSeconds(0.1f);
                     if (moduleSolved) yield return "solve";
@@ -401,7 +401,7 @@ public class FlashingArrowsScript : BaseArrowsScript {
                 yield return null;
                 var debugIdx = Array.IndexOf(arrowButtons, allPresses[x]);
                 if (debugIdx != correctPresses[curPos] && allPresses.Count > 1)
-                    yield return string.Format("strikemessage by incorrectly pressing {0} after {1} press(es) in the TP command!", debugDirections[debugIdx], x + 1);
+                    yield return string.Format("strikemessage incorrectly pressing {0} after {1} press(es) in the TP command!", debugDirections[debugIdx], x + 1);
                 allPresses[x].OnInteract();
                 yield return new WaitForSeconds(0.1f);
                 if (moduleSolved) { yield return "solve"; }

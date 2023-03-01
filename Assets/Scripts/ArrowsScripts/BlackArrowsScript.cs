@@ -735,7 +735,7 @@ public class BlackArrowsScript : BaseArrowsScript {
     
 #pragma warning disable 414
     private readonly string TwitchHelpMessage = "Press the specified arrow button with \"!{0} up/right/down/left\" Words can be substituted as one letter (Ex. right as r). "+
-        "Multiple directions can be issued in one command by spacing them out or as a 1 word when abbrevivabted, I.E. \"!{0} udlrrrll\". Alternatively, when abbreviated, you may space out the presses in the command. I.E. \"!{0} lluur ddlr urd\" Toggle colorblind mode with \"!{0} colorblind\"";
+        "Multiple directions can be issued in one command by spacing them out or as a 1 word when abbreviated, I.E. \"!{0} udlrrrll\". Alternatively, when abbreviated, you may space out the presses in the command. I.E. \"!{0} lluur ddlr urd\" Toggle colorblind mode with \"!{0} colorblind\"";
 #pragma warning restore 414
     protected override IEnumerator ProcessTwitchCommand(string command)
     {
@@ -793,7 +793,7 @@ public class BlackArrowsScript : BaseArrowsScript {
                 {
                     yield return null;
                     if (allPresses[x] != finalDirectionIdxPresses[currentInputPos] && allPresses.Count > 1)
-                        yield return string.Format("strikemessage by incorrectly pressing {0} after {1} press(es) in the TP command!", idxToDirections[allPresses[x]], x + 1);
+                        yield return string.Format("strikemessage incorrectly pressing {0} after {1} press(es) in the TP command!", idxToDirections[allPresses[x]], x + 1);
                     arrowButtons[allPresses[x]].OnInteract();
                     yield return new WaitForSeconds(0.1f);
                     if (moduleSolved) yield return "solve";
@@ -845,7 +845,7 @@ public class BlackArrowsScript : BaseArrowsScript {
                 {
                     yield return null;
                     if (allPresses[x] != finalDirectionIdxPresses[currentInputPos] && allPresses.Count > 1)
-                        yield return string.Format("strikemessage by incorrectly pressing {0} after {1} press(es) in the TP command!", idxToDirections[allPresses[x]], x + 1);
+                        yield return string.Format("strikemessage incorrectly pressing {0} after {1} press(es) in the TP command!", idxToDirections[allPresses[x]], x + 1);
                     arrowButtons[allPresses[x]].OnInteract();
                     yield return new WaitForSeconds(0.1f);
                     if (moduleSolved) yield return "solve";
