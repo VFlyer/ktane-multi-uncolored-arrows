@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using KeepCoding;
 using uernd = UnityEngine.Random;
 
 public class BlackArrowsScript : BaseArrowsScript {
@@ -96,7 +97,7 @@ public class BlackArrowsScript : BaseArrowsScript {
     };
 
     private static int moduleIdCounter = 1;
-    bool readyToSolve = false, hasStarted = false, hasStruck, isFlashing = false, requestForceSolve;
+    bool readyToSolve = false, hasStarted = false, hasStruck, isFlashing = false, requestForceSolve, bossActive;
     int currentStageNum = -1, totalStagesGeneratable, currentInputPos;
     IEnumerator currentFlashingDirection;
     Color firstTextColor;
@@ -121,11 +122,12 @@ public class BlackArrowsScript : BaseArrowsScript {
                 ModConfig<BlackArrowsSettings> modConfig = new ModConfig<BlackArrowsSettings>("BlackArrowsSettings");
                 KArrSettings = modConfig.Settings;
                 modConfig.Settings = KArrSettings;
+                bossActive = !KArrSettings.nonBossModeBlackArrows;
             }
             catch
             {
                 Debug.LogWarningFormat("<Black Arrows Settings> Settings do not work as intended! Using default settings.");
-                KArrSettings = new BlackArrowsSettings();
+                bossActive = true;
             }
             
         }
@@ -134,7 +136,15 @@ public class BlackArrowsScript : BaseArrowsScript {
     // Use this for initialization
     void Start() {
         moduleId = moduleIdCounter++;
-        ignoreList = bossModule.GetIgnoredModules(modSelf, ignoreList);
+        var obtainedIgnoreList = bossModule.GetIgnoredModules(modSelf);
+        if (obtainedIgnoreList != null && obtainedIgnoreList.Any())
+            ignoreList = obtainedIgnoreList;
+        else
+        {
+            QuickLog("This module uses Boss Module Manager to enforce boss mode on this module. To prevent softlocks, this module will have altered functionality.");
+            bossActive = false;
+        }
+        TryOverrideSettings();
         modSelf.OnActivate += StartBossModule;
 
         for (int x = 0; x < arrowRenderers.Length; x++)
@@ -185,6 +195,11 @@ public class BlackArrowsScript : BaseArrowsScript {
                 moduleSolved = true;
                 StartCoroutine(victory());
             }
+            else if (!bossActive)
+            {
+                currentFlashingDirection = HandleNonBossArrowsReveal();
+                StartCoroutine(currentFlashingDirection);
+            }
         }
         else
         {
@@ -203,7 +218,17 @@ public class BlackArrowsScript : BaseArrowsScript {
             }
         }
     }
-
+    IEnumerator HandleNonBossArrowsReveal()
+    {
+        int lastCorrectInputPos = currentInputPos;
+        yield return TypeText(currentInputPos.ToString("00"));
+        while (lastCorrectInputPos == currentInputPos)
+        {
+            var currentStageRepeat = allRepeatCounts[currentInputPos - 1];
+            var currentStageDirection = allDirectionIdxs[currentInputPos - 1];
+            yield return FlashingGivenDirection(currentStageDirection, currentStageRepeat);
+        }
+    }
     IEnumerator HandleMercy()
     {
         yield return null;
@@ -215,7 +240,6 @@ public class BlackArrowsScript : BaseArrowsScript {
             {
                 yield return FlashingGivenDirection(allDirectionIdxs[x], allRepeatCounts[x]);
             }
-            yield return new WaitForSeconds(5f);
         }
     }
     IEnumerator HandleFullMercy()
@@ -235,109 +259,6 @@ public class BlackArrowsScript : BaseArrowsScript {
             yield return new WaitForSeconds(5f);
         }
     }
-    /*
-    IEnumerator GlowGivenDirection(int directionIdx, int repeatCount = 1)
-    {
-        yield return new WaitForSeconds(0.5f);
-        for (int x = 0; x < repeatCount; x++)
-        {
-            switch (directionIdx)
-            {
-                case 0: // Flash all arrows once per cycle.
-                    {
-                        arrowRenderers[0].material = setMats[1];
-                        arrowRenderers[1].material = setMats[1];
-                        arrowRenderers[2].material = setMats[1];
-                        arrowRenderers[3].material = setMats[1];
-                        yield return new WaitForSeconds(0.5f);
-                        arrowRenderers[0].material = setMats[0];
-                        arrowRenderers[1].material = setMats[0];
-                        arrowRenderers[2].material = setMats[0];
-                        arrowRenderers[3].material = setMats[0];
-                        yield return new WaitForSeconds(0.5f);
-                        break;
-                    }
-                case 1: // Flash the Up arrow once per cycle.
-                    {
-                        arrowRenderers[0].material = setMats[1];
-                        yield return new WaitForSeconds(0.5f);
-                        arrowRenderers[0].material = setMats[0];
-                        yield return new WaitForSeconds(0.5f);
-                        break;
-                    }
-                case 2: // Flash the Up and Right arrows once per cycle.
-                    {
-                        arrowRenderers[0].material = setMats[1];
-                        arrowRenderers[1].material = setMats[1];
-                        yield return new WaitForSeconds(0.5f);
-                        arrowRenderers[0].material = setMats[0];
-                        arrowRenderers[1].material = setMats[0];
-                        yield return new WaitForSeconds(0.5f);
-                        break;
-                    }
-                case 3: // Flash the Right arrow once per cycle.
-                    {
-                        arrowRenderers[1].material = setMats[1];
-                        yield return new WaitForSeconds(0.5f);
-                        arrowRenderers[1].material = setMats[0];
-                        yield return new WaitForSeconds(0.5f);
-                        break;
-                    }
-                case 4: // Flash the Down and Right arrows once per cycle.
-                    {
-                        arrowRenderers[1].material = setMats[1];
-                        arrowRenderers[2].material = setMats[1];
-                        yield return new WaitForSeconds(0.5f);
-                        arrowRenderers[1].material = setMats[0];
-                        arrowRenderers[2].material = setMats[0];
-                        yield return new WaitForSeconds(0.5f);
-                        break;
-                    }
-                case 5: // Flash the Down arrow once per cycle.
-                    {
-                        arrowRenderers[2].material = setMats[1];
-                        yield return new WaitForSeconds(0.5f);
-                        arrowRenderers[2].material = setMats[0];
-                        yield return new WaitForSeconds(0.5f);
-                        break;
-                    }
-                case 6: // Flash the Down and Left arrows once per cycle.
-                    {
-                        arrowRenderers[2].material = setMats[1];
-                        arrowRenderers[3].material = setMats[1];
-                        yield return new WaitForSeconds(0.5f);
-                        arrowRenderers[2].material = setMats[0];
-                        arrowRenderers[3].material = setMats[0];
-                        yield return new WaitForSeconds(0.5f);
-                        break;
-                    }
-                case 7: // Flash the Left arrow once per cycle.
-                    {
-                        arrowRenderers[3].material = setMats[1];
-                        yield return new WaitForSeconds(0.5f);
-                        arrowRenderers[3].material = setMats[0];
-                        yield return new WaitForSeconds(0.5f);
-                        break;
-                    }
-                case 8: // Flash the Down and Left arrows once per cycle.
-                    {
-                        arrowRenderers[0].material = setMats[1];
-                        arrowRenderers[3].material = setMats[1];
-                        yield return new WaitForSeconds(0.5f);
-                        arrowRenderers[0].material = setMats[0];
-                        arrowRenderers[3].material = setMats[0];
-                        yield return new WaitForSeconds(0.5f);
-                        break;
-                    }
-                default:
-                    yield return null;
-                    break;
-            }
-        }
-        yield return new WaitForSeconds(1.5f);
-        isFlashing = false;
-    }
-    */
     IEnumerator FlashingGivenDirection(int directionIdx, int repeatCount = 1)
     {
         yield return new WaitForSeconds(0.5f);
@@ -455,7 +376,10 @@ public class BlackArrowsScript : BaseArrowsScript {
     void StartBossModule()
     {
         totalStagesGeneratable = bombInfo.GetSolvableModuleNames().Count(a => !ignoreList.Contains(a));
-        QuickLogFormat("Total Extra Stages Generatable: {0}", totalStagesGeneratable);
+        if (bossActive)
+            QuickLogFormat("Total Extra Stages Generatable: {0}", totalStagesGeneratable);
+        else
+            QuickLogFormat("Boss mode is inactive. Generating this many extra stages: {0}", totalStagesGeneratable);
         allDirectionIdxs = new List<int>();
         allRepeatCounts = new List<int>();
 
@@ -463,12 +387,10 @@ public class BlackArrowsScript : BaseArrowsScript {
 
         int rowIdx = char.IsDigit(serialNo[2]) ? int.Parse(serialNo[2].ToString()) : serialNo[2] - 'A' + 1;
         int colIdx = char.IsDigit(serialNo[5]) ? int.Parse(serialNo[5].ToString()) : serialNo[5] - 'A' + 1;
-        //QuickLogFormat("Using {0} from serial number letters.", KArrSettings.easyModeBlackArrows ? "no initial offset" : KArrSettings.extendSerialLetterInitialCalcs ? "mod 12 offset" : "mod 5 offset");
-        //QuickLog("This is a test build! Do report issues with this.");
         int modifier = bombInfo.GetSerialNumberLetters().Select(a => a - 'A' + 1).Sum() % 12; //(KArrSettings.easyModeBlackArrows ? 1 : KArrSettings.extendSerialLetterInitialCalcs ? 12 : 5);
         QuickLogFormat("Starting Position: Row {0}, Col {1}", rowIdx, colIdx);
         QuickLogFormat("Sum of Alphabetical Positions of Serial Number Letters, Modulo {1}: {0}", modifier,
-            12); //KArrSettings.easyModeBlackArrows ? 1 : KArrSettings.extendSerialLetterInitialCalcs ? 12 : 5);
+            12);
 
         List<int> allFinalValuesVisited = new List<int>();
         // Stage 0's value
@@ -540,6 +462,7 @@ public class BlackArrowsScript : BaseArrowsScript {
         QuickLogFormat("Presses required (From stage 0): {0}", finalDirectionIdxPresses.Select(x => idxToDirections[x]).Join(", "));
         hasStarted = true;
         isanimating = false;
+        readyToSolve = !bossActive;
     }
     void HandleColorblindToggle() {
         colorblindArrowDisplay.gameObject.SetActive(colorblindActive);
@@ -567,7 +490,7 @@ public class BlackArrowsScript : BaseArrowsScript {
         {
             if (colorblindActive)
             {
-                breatheDelay -= (requestForceSolve ? 10 : 1) * Time.deltaTime;
+                breatheDelay -= Time.deltaTime;
                 if (breatheDelay < 0) breatheDelay = 6f;
                 textDisplay.color = Color.white * (0.5f - Mathf.Abs((breatheDelay / 6f) - 0.5f)) * 2 + firstTextColor * Mathf.Abs((breatheDelay / 6f) - 0.5f) * 2;
                 for (int x = 0; x < timerDisplayer.Length; x++)
@@ -617,7 +540,7 @@ public class BlackArrowsScript : BaseArrowsScript {
             }
             else
             {
-                delayLeft -= Time.deltaTime;
+                delayLeft -= Time.deltaTime * (requestForceSolve ? 10 : 1);
                 if (!isFlashing)
                 {
                     isFlashing = true;
@@ -728,6 +651,30 @@ public class BlackArrowsScript : BaseArrowsScript {
         */
     }
     
+    void TryOverrideSettings()
+    {
+        var missionID = Game.Mission.ID ?? "freeplay";
+        QuickLogFormat("Detected mission ID: {0}", missionID);
+        switch (missionID)
+        {
+            case "freeplay":
+            case "custom":
+                QuickLog("Mission being ran on a customized freeplay. Not allowed to override settings.");
+                return;
+        }
+        var description = Game.Mission.Description ?? "";
+        var regexOverrideBoss = Regex.Match(description, @"[BlackArrows]\s(true|false)");
+        if (regexOverrideBoss.Success)
+        {
+            var valueObtained = regexOverrideBoss.Value;
+            var overrideState = false;
+            if (bool.TryParse(valueObtained.Split().Last(), out overrideState))
+            {
+                QuickLog("Settings overriden via descriptions.");
+                bossActive = overrideState;
+            }
+        }
+    }
     public class BlackArrowsSettings
     {
         public bool nonBossModeBlackArrows = false;
