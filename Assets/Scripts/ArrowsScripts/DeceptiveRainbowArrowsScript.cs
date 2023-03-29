@@ -214,16 +214,16 @@ public class DeceptiveRainbowArrowsScript : BaseArrowsScript
         }
         textColorIdx = rnd.Range(0, 6);
         decoyTextColorIdx = Enumerable.Range(0, 7).Where(a => a != textColorIdx).PickRandom();
-        QuickLog(string.Format("Colors around the module (Starting at North and going clockwise): {0}", colorIdxes.Select(a => debugColors[a]).Join(", ")));
-        QuickLog(string.Format("Flashing Arrow Combinations: [{0}]",
-            Enumerable.Range(0, Mathf.Min(flashingColorIdxes.Count, flashingInverted.Count)).Select(a => (flashingInverted[a] ? "Inverted " : "Normal ") + debugColors[flashingColorIdxes[a]]).Join("] , [")));
-        QuickLog(string.Format("The text is flashing this color every time the arrow sequence ends: {0}", debugColors[textColorIdx]));
-        QuickLog(string.Format("The text is initially this color: {0}", debugColors[decoyTextColorIdx]));
+        QuickLogFormat("Colors around the module (Starting at North and going clockwise): {0}", colorIdxes.Select(a => debugColors[a]).Join(", "));
+        QuickLogFormat("Flashing Arrow Combinations: [{0}]",
+            Enumerable.Range(0, Mathf.Min(flashingColorIdxes.Count, flashingInverted.Count)).Select(a => (flashingInverted[a] ? "Inverted " : "Normal ") + debugColors[flashingColorIdxes[a]]).Join("] , ["));
+        QuickLogFormat("The text is flashing this color every time the arrow sequence ends: {0}", debugColors[textColorIdx]);
+        QuickLogFormat("The text is initially this color: {0}", debugColors[decoyTextColorIdx]);
         StartCoroutine(TypeText(ToOctal(displayedValue, 2)));
         QuickLog("All possible queries:");
         for (var x = 0; x < responseValues.Length; x++)
         {
-            QuickLog(string.Format("{0}: {1}", ToOctal(x, 2), ToOctal(responseValues[x], 2)));
+            QuickLogFormat("{0}: {1}", ToOctal(x, 2), ToOctal(responseValues[x], 2));
         }
         QuickLog();
         currentFlasher = FlashCombinationSets();

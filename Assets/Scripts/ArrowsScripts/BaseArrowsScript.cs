@@ -24,6 +24,15 @@ public class BaseArrowsScript : MonoBehaviour {
         moduleId = moduleIdCounter++;
 	}
 
+    protected virtual void QuickLogDebug(string toLog = "")
+    {
+        Debug.LogFormat("<? Arrows #{0}>: {1}", moduleId, toLog);
+    }
+
+    protected virtual void QuickLogDebugFormat(string toLog = "", params object[] misc)
+    {
+        Debug.LogFormat("<? Arrows #{0}>: {1}", moduleId, string.Format(toLog, misc));
+    }
     protected virtual void QuickLog(string toLog = "")
     {
         Debug.LogFormat("[? Arrows #{0}]: {1}", moduleId, toLog);

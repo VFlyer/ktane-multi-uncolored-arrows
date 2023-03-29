@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: colorfulAndBlackArrowsMod
   title: Multicolored and Uncolored Arrows
-  author: VFlyer, eXish, Madela, R3Ked, TasThing
+  author: VFlyer, eXish, Madela, R3Ked, TasThiluna
   description: 'A collection of 5 Arrow Modules, 4 of which with manual ideas are
     by the respective creators.
 
@@ -25,7 +25,7 @@ MonoBehaviour:
 
     Flashing Arrows: R3Ked
 
-    Black Arrows: TasThing
+    Black Arrows: TasThiluna
 
     Gray Arrows: Danny7007
 

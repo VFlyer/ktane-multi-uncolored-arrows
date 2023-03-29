@@ -141,7 +141,7 @@ public class BlackArrowsScript : BaseArrowsScript {
             ignoreList = obtainedIgnoreList;
         else
         {
-            QuickLog("This module uses Boss Module Manager to enforce boss mode on this module. To prevent softlocks, this module will have altered functionality.");
+            QuickLog("This module uses Boss Module Manager to enforce boss mode on this module. To prevent softlocks, this module will have altered functionality under normal circumstances.");
             bossActive = false;
         }
         TryOverrideSettings();
@@ -400,7 +400,7 @@ public class BlackArrowsScript : BaseArrowsScript {
         for (int x = 0; x < totalStagesGeneratable; x++)
         {
             QuickLog("");
-            QuickLogFormat("Stage {0}:", x + 1);
+            QuickLogFormat("----------------------- Stage {0} -----------------------", x + 1);
             int curDirectionIdx = uernd.Range(0, 9);
             int repeatCount = curDirectionIdx == 0 ? 1 : uernd.Range(1, 4);
             allRepeatCounts.Add(repeatCount);
@@ -454,7 +454,7 @@ public class BlackArrowsScript : BaseArrowsScript {
             QuickLogFormat("After adding sum of alphabetical positions in serial number, mod 12: {0}", indivStageVal);
             var indivStageDir = (indivStageVal - 1) % 12 + 1;
             QuickLogFormat("Result after keeping the number within 1 - 12 inclusive: {0} ({1})", indivStageDir, idxToDirections[goalIdxPressesByValue[indivStageDir]]);
-            QuickLog("");
+            QuickLog("--------------------------------------------------------");
         }
         allFinalValuesVisited = allFinalValuesVisited.Select(a => (a + modifier - 1) % 12 + 1).ToList();
         QuickLogFormat("Final Values for all stages (including stage 0, after adding sum of alphabetical positions in serial no. mod 12, kept within 1 - 12 inclusive): {0}", allFinalValuesVisited.Join(", "));
@@ -559,6 +559,10 @@ public class BlackArrowsScript : BaseArrowsScript {
     {
         QuickLog(string.Format(toLog, args));
     }
+    protected override void QuickLogDebugFormat(string toLog = "", params object[] args)
+    {
+        Debug.LogFormat("<Black Arrows #{0}>: {1}", moduleId, string.Format(toLog, args));
+    }
 
     private IEnumerator BreatheArrowFlashes(float delay)
     {
@@ -654,7 +658,7 @@ public class BlackArrowsScript : BaseArrowsScript {
     void TryOverrideSettings()
     {
         var missionID = Game.Mission.ID ?? "freeplay";
-        QuickLogFormat("Detected mission ID: {0}", missionID);
+        QuickLogDebugFormat("Detected mission ID: {0}", missionID);
         switch (missionID)
         {
             case "freeplay":

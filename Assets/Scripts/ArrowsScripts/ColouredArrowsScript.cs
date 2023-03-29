@@ -37,6 +37,11 @@ public class ColouredArrowsScript : BaseArrowsScript {
         { "Green", new Color(0.18393165f, 0.5955882f, 0.22083879f) },
         { "Blue", new Color(.03529412f, .043137256f, 1) },
     };
+    protected override void QuickLogDebugFormat(string toLog = "", params object[] misc)
+    {
+        Debug.LogFormat("<Coloured Arrows #{0}>: {1}", moduleId, string.Format(toLog, misc));
+    }
+
     void HandleRuleSeed()
     {
         
@@ -98,10 +103,10 @@ public class ColouredArrowsScript : BaseArrowsScript {
             possibleIdxGoalColors.Add(2, new[] { 2, 3, 0, 1, });
             possibleIdxGoalColors.Add(3, new[] { 3, 0, 1, 2, });
         }
-        Debug.LogFormat("<Coloured Arrows #{0}>: Rule-Seed Generated Instructions: (Formatted as [Color displayed]: [ Goal Colors for the arrow pointing Up, Right, Down, Left respectively ])", moduleId);
+        QuickLogDebugFormat("Rule-Seed Generated Instructions: (Formatted as [Color displayed]: [ Goal Colors for the arrow pointing Up, Right, Down, Left respectively ])", moduleId);
         foreach (var rsSet in possibleIdxGoalColors)
         {
-            Debug.LogFormat("<Coloured Arrows #{0}>: {1}: [ {2} ]", moduleId,
+            QuickLogDebugFormat("{1}: [ {2} ]", moduleId,
                 possibleColors.ElementAtOrDefault(rsSet.Key),
                 rsSet.Value.Select(a => possibleColors.ElementAtOrDefault(a)).Join(", "));
         }
