@@ -658,12 +658,16 @@ public class BlackArrowsScript : BaseArrowsScript {
     void TryOverrideSettings()
     {
         var missionID = Game.Mission.ID ?? "freeplay";
-        QuickLogDebugFormat("Detected mission ID: {0}", missionID);
+        //QuickLogDebugFormat("Detected mission ID: {0}", missionID);
         switch (missionID)
         {
             case "freeplay":
             case "custom":
                 QuickLog("Mission being ran on a customized freeplay. Not allowed to override settings.");
+                return;
+            case "mod_madnessMissionPack_arrowsMadness":
+                QuickLog("Specific mission detected: Arrow Madness from Darksly's Madness Pack.");
+                bossActive = true;
                 return;
         }
         var description = Game.Mission.Description ?? "";
