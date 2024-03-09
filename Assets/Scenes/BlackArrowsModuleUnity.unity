@@ -152,6 +152,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 114370882970158550, guid: bb746f71cfa81d544a03712c02b4f8d5,
+        type: 2}
+      propertyPath: debugBossMode
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bb746f71cfa81d544a03712c02b4f8d5, type: 2}
   m_IsPrefabParent: 0
