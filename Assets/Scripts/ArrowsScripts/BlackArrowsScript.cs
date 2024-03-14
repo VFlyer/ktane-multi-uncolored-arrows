@@ -208,9 +208,14 @@ public class BlackArrowsScript : BaseArrowsScript {
         yield return TypeText(currentInputPos.ToString("00"));
         while (lastCorrectInputPos == currentInputPos)
         {
-            var currentStageRepeat = allRepeatCounts[currentInputPos - 1];
-            var currentStageDirection = allDirectionIdxs[currentInputPos - 1];
-            yield return FlashingGivenDirection(currentStageDirection, currentStageRepeat);
+            if (enableLegacyBlackArrows)
+            {
+                var currentStageRepeat = allRepeatCounts[currentInputPos - 1];
+                var currentStageDirection = allDirectionIdxs[currentInputPos - 1];
+                yield return FlashingGivenDirection(currentStageDirection, currentStageRepeat);
+            }
+            else
+                yield return HandleFlashCurStage(lastCorrectInputPos);
         }
     }
     IEnumerator HandleMercy()
@@ -222,7 +227,7 @@ public class BlackArrowsScript : BaseArrowsScript {
         {
             for (int x = 0; x < currentInputPos && lastCorrectInputPos == currentInputPos; x++)
             {
-                yield return FlashingGivenDirection(allDirectionIdxs[x], allRepeatCounts[x]);
+                yield return enableLegacyBlackArrows ? FlashingGivenDirection(allDirectionIdxs[x], allRepeatCounts[x]) : HandleFlashCurStage(x);
             }
         }
     }
@@ -516,6 +521,7 @@ public class BlackArrowsScript : BaseArrowsScript {
         { 7, "Move Left"},
         { 8, "Move Up-Left"},
     };
+    #region ReworkKArrows
     void StartBossModule()
     {
         QuickLogFormat("This is the reworked version of Black Arrows. Some calculation procedures have been altered to make this less boring.");
@@ -669,9 +675,13 @@ public class BlackArrowsScript : BaseArrowsScript {
         {
             QuickLog("Using Grid A throughout the entire module.");
             // Stage 0's value
-            allFinalValuesVisited.Add(gridA[rowIdx, colIdx]);
+            var stage0Val = gridA[rowIdx, colIdx];
+            allFinalValuesVisited.Add(stage0Val);
             QuickLogFormat("Base Number from Stage 0: {0}", gridA[rowIdx, colIdx]);
-
+            var stage0AfterOffset = stage0Val + modifier % 4;
+            QuickLogFormat("After adding sum of alphabetical positions in serial number, mod 4: {0}", stage0AfterOffset);
+            var stage0Dir = stage0Val % 4;
+            QuickLogFormat("Result after keeping the number within 0 - 3 inclusive: {0} ({1})", stage0Dir, idxToDirections[allDirsFromConds[idxConditionsApplied.Last()][stage0Dir]]);
             for (int x = 0; x < totalStagesGeneratable; x++)
             {
                 QuickLog("");
@@ -739,11 +749,15 @@ public class BlackArrowsScript : BaseArrowsScript {
                 QuickLog("--------------------------------------------------------");
             }
         }
-        QuickLogFormat("All values obtained from all stages, including stage 0, modulo 4: {0}", allFinalValuesVisited.Select(a => a % 4).Join(", "));
-        for (var x = 0; x < allFinalValuesVisited.Count; x++)
+        var finalValuesAfterOffset = allFinalValuesVisited.Select(a => (a + modifier) % 4).ToList();
+        var _1BackShiftedIdxRulesApplied = idxConditionsApplied.Skip(idxConditionsApplied.Length - 1).Concat(idxConditionsApplied.Take(idxConditionsApplied.Length - 1));
+        QuickLogDebugFormat("{0}", _1BackShiftedIdxRulesApplied.Join());
+        QuickLogDebugFormat("{0}", idxConditionsApplied.Join());
+        QuickLogFormat("All values obtained from all stages, including stage 0, modulo 4: {0}", finalValuesAfterOffset.Join(", "));
+        for (var x = 0; x < finalValuesAfterOffset.Count; x++)
         {
-            var curIdxTrueRule = idxConditionsApplied.ElementAt((x + idxConditionsApplied.Length - 1) % idxConditionsApplied.Count());
-            finalDirectionIdxPresses.Add(allDirsFromConds[curIdxTrueRule][(allFinalValuesVisited[x] + modifier + x) % 4]);
+            var curIdxTrueRule = _1BackShiftedIdxRulesApplied.ElementAt(x % _1BackShiftedIdxRulesApplied.Count());
+            finalDirectionIdxPresses.Add(allDirsFromConds[curIdxTrueRule][finalValuesAfterOffset[x] % 4]);
         }
         QuickLogFormat("Expected directions to press, from stage 0: {0}", finalDirectionIdxPresses.Select(a => idxToDirections[a]).Join(", "));
         QuickLog("------------------------- User Interactions -------------------------------");
@@ -751,6 +765,8 @@ public class BlackArrowsScript : BaseArrowsScript {
         isanimating = false;
         readyToSolve = !bossActive;
     }
+    #endregion
+    #region LegacyKArrows
     void StartBossModuleLegacy()
     {
         totalStagesGeneratable = bombInfo.GetSolvableModuleNames().Count(a => !ignoreList.Contains(a));
@@ -868,6 +884,7 @@ public class BlackArrowsScript : BaseArrowsScript {
         isanimating = false;
         readyToSolve = !bossActive;
     }
+    #endregion
     void HandleColorblindToggle() {
         colorblindArrowDisplay.gameObject.SetActive(colorblindActive);
     }
@@ -965,7 +982,7 @@ public class BlackArrowsScript : BaseArrowsScript {
     }
     protected override void QuickLogDebugFormat(string toLog = "", params object[] args)
     {
-        QuickLogDebugFormat(string.Format(toLog, args));
+        QuickLogDebug(string.Format(toLog, args));
     }
     protected override void QuickLogDebug(string toLog = "")
     {
