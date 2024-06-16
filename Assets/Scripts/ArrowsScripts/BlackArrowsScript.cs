@@ -70,7 +70,7 @@ public class BlackArrowsScript : BaseArrowsScript {
     };
 
     private static int moduleIdCounter = 1;
-    bool readyToSolve = false, hasStarted = false, hasStruck, isFlashing = false, requestForceSolve, bossActive, enableLegacyBlackArrows;
+    bool readyToSolve = false, hasStarted = false, hasStruck, isFlashing = false, requestForceSolve, bossActive = true, enableLegacyBlackArrows;
     int currentStageNum = -1, totalStagesGeneratable, currentInputPos;
     IEnumerator currentFlashingDirection;
     Color firstTextColor;
@@ -98,7 +98,7 @@ public class BlackArrowsScript : BaseArrowsScript {
                 ModConfig<BlackArrowsSettings> modConfig = new ModConfig<BlackArrowsSettings>("BlackArrowsSettings");
                 KArrSettings = modConfig.Settings;
                 modConfig.Settings = KArrSettings;
-                bossActive = !KArrSettings.nonBossModeBlackArrows;
+                //bossActive = !KArrSettings.nonBossModeBlackArrows;
                 enableLegacyBlackArrows = KArrSettings.legacyBlackArrows;
             }
             catch
@@ -603,7 +603,10 @@ public class BlackArrowsScript : BaseArrowsScript {
             // Stage 0's value
             allFinalValuesVisited.Add(gridB[rowIdx, colIdx]);
             QuickLogFormat("Base Number from Stage 0: {0}", gridB[rowIdx, colIdx]);
-
+            var stage0AfterOffset = gridB[rowIdx, colIdx] + modifier % 4;
+            QuickLogFormat("After adding sum of alphabetical positions in serial number, mod 4: {0}", stage0AfterOffset);
+            var stage0Dir = stage0AfterOffset % 4;
+            QuickLogFormat("Result after keeping the number within 0 - 3 inclusive: {0} ({1})", stage0AfterOffset, idxToDirections[allDirsFromConds[idxConditionsApplied.Last()][stage0Dir]]);
             for (int x = 0; x < totalStagesGeneratable; x++)
             {
                 QuickLog("");
@@ -680,8 +683,8 @@ public class BlackArrowsScript : BaseArrowsScript {
             QuickLogFormat("Base Number from Stage 0: {0}", gridA[rowIdx, colIdx]);
             var stage0AfterOffset = stage0Val + modifier % 4;
             QuickLogFormat("After adding sum of alphabetical positions in serial number, mod 4: {0}", stage0AfterOffset);
-            var stage0Dir = stage0Val % 4;
-            QuickLogFormat("Result after keeping the number within 0 - 3 inclusive: {0} ({1})", stage0Dir, idxToDirections[allDirsFromConds[idxConditionsApplied.Last()][stage0Dir]]);
+            var stage0Dir = stage0AfterOffset % 4;
+            QuickLogFormat("Result after keeping the number within 0 - 3 inclusive: {0} ({1})", stage0AfterOffset, idxToDirections[allDirsFromConds[idxConditionsApplied.Last()][stage0Dir]]);
             for (int x = 0; x < totalStagesGeneratable; x++)
             {
                 QuickLog("");
