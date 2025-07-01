@@ -603,7 +603,7 @@ public class BlackArrowsScript : BaseArrowsScript {
             // Stage 0's value
             allFinalValuesVisited.Add(gridB[rowIdx, colIdx]);
             QuickLogFormat("Base Number from Stage 0: {0}", gridB[rowIdx, colIdx]);
-            var stage0AfterOffset = gridB[rowIdx, colIdx] + modifier % 4;
+            var stage0AfterOffset = (gridB[rowIdx, colIdx] + modifier) % 4;
             QuickLogFormat("After adding sum of alphabetical positions in serial number, mod 4: {0}", stage0AfterOffset);
             var stage0Dir = stage0AfterOffset % 4;
             QuickLogFormat("Result after keeping the number within 0 - 3 inclusive: {0} ({1})", stage0AfterOffset, idxToDirections[allDirsFromConds[idxConditionsApplied.Last()][stage0Dir]]);
@@ -681,7 +681,7 @@ public class BlackArrowsScript : BaseArrowsScript {
             var stage0Val = gridA[rowIdx, colIdx];
             allFinalValuesVisited.Add(stage0Val);
             QuickLogFormat("Base Number from Stage 0: {0}", gridA[rowIdx, colIdx]);
-            var stage0AfterOffset = stage0Val + modifier % 4;
+            var stage0AfterOffset = (stage0Val + modifier) % 4;
             QuickLogFormat("After adding sum of alphabetical positions in serial number, mod 4: {0}", stage0AfterOffset);
             var stage0Dir = stage0AfterOffset % 4;
             QuickLogFormat("Result after keeping the number within 0 - 3 inclusive: {0} ({1})", stage0AfterOffset, idxToDirections[allDirsFromConds[idxConditionsApplied.Last()][stage0Dir]]);
